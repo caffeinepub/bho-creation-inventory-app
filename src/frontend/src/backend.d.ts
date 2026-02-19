@@ -51,6 +51,7 @@ export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     assignUserRole(userPrincipal: Principal, role: string): Promise<string>;
     createUser(userPrincipal: Principal, name: string, username: string, role: string): Promise<string>;
+    getAllInventoryFabricEntries(): Promise<Array<[string, FabricInventoryEntry]>>;
     getAllUsers(): Promise<Array<[Principal, UserProfile]>>;
     getAuditLog(): Promise<Array<AuditLogEntry>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -58,6 +59,10 @@ export interface backendInterface {
     getInventory(): Promise<Array<[string, FabricInventoryEntry]>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
+    promoteToMasterAdmin(masterAdminMetadata: {
+        username: string;
+        name: string;
+    }): Promise<string>;
     removeFabricEntry(rackId: string): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     updateFabricQuantity(rackId: string, usedQuantity: number): Promise<string>;

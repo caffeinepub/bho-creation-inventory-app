@@ -7,12 +7,13 @@ import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
 import List "mo:core/List";
 import Iter "mo:core/Iter";
+
 import AccessControl "authorization/access-control";
-import MixinAuthorization "authorization/MixinAuthorization";
 import Storage "blob-storage/Storage";
+import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
 
-
+// New admin setup helper.
 
 actor {
   include MixinStorage();
@@ -20,10 +21,12 @@ actor {
   let accessControlState = AccessControl.initState();
   include MixinAuthorization(accessControlState);
 
+  public type UserRole = AccessControl.UserRole;
+
   public type UserProfile = {
     name : Text;
     username : Text;
-    role : AccessControl.UserRole;
+    role : UserRole;
   };
 
   public type FabricInventoryEntry = {
@@ -44,12 +47,44 @@ actor {
     timestamp : Int;
   };
 
+  // Store persistent state as internal Map
   var auditLog = List.empty<AuditLogEntry>();
   let userProfiles = Map.empty<Principal, UserProfile>();
   let inventory = Map.empty<Text, FabricInventoryEntry>();
 
+  // REQUIRED. One-time admin setup (triggers on empty actor).
+  // This function can ONLY be called once when no users exist in the system.
+  // It bootstraps the first Master Admin who can then manage all other users.
+  public shared ({ caller }) func promoteToMasterAdmin(masterAdminMetadata : {
+    name : Text;
+    username : Text;
+  }) : async Text {
+    // Security: Only allow this if NO users exist yet (initial bootstrap)
+    if (userProfiles.size() > 0) {
+      Runtime.trap("Unauthorized: Master Admin already exists. This function can only be used for initial setup.");
+    };
+
+    // Prevent anonymous principals from becoming admin
+    if (caller.isAnonymous()) {
+      Runtime.trap("Unauthorized: Anonymous users cannot become Master Admin");
+    };
+
+    // Set up user profile.
+    let adminProfile = {
+      name = masterAdminMetadata.name;
+      username = masterAdminMetadata.username;
+      role = #admin : UserRole;
+    };
+    userProfiles.add(caller, adminProfile);
+
+    // Assign admin role to internal access control state.
+    AccessControl.assignRole(accessControlState, caller, caller, #admin);
+
+    "Master admin created successfully! You now have full access to all administrative features. Use your privileges wisely to manage users, assign roles, and maintain the system. Remember to always follow best practices for security and governance.";
+  };
+
   // Mapping external role representations to internal AccessControl.UserRole
-  func mapToInternalRole(role : Text) : ?AccessControl.UserRole {
+  func mapToInternalRole(role : Text) : ?UserRole {
     switch (role) {
       case ("admin") { ?#admin };
       case ("office") { ?#user };
@@ -58,7 +93,7 @@ actor {
     };
   };
 
-  func getInternalRole(role : AccessControl.UserRole) : Text {
+  func getInternalRole(role : UserRole) : Text {
     switch (role) {
       case (#admin) { "admin" };
       case (#user) { "office" };
@@ -84,6 +119,14 @@ actor {
     userProfiles.get(user);
   };
 
+  // Provide a method to query all users (requires admin privileges)
+  public query ({ caller }) func getAllUsers() : async [(Principal, UserProfile)] {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can view all users");
+    };
+    userProfiles.toArray();
+  };
+
   public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can save profiles");
@@ -92,17 +135,14 @@ actor {
   };
 
   // Core functionality - Fabric Management
-  // Master Admin and Office Staff can add fabric entries
-  public shared ({ caller }) func addFabricEntry(
-    rackId : Text,
-    fabric : {
-      fabricName : Text;
-      quantity : Float;
-      fabricPhoto : ?Storage.ExternalBlob;
-      purchaseDate : ?Int;
-      billPhoto : ?Storage.ExternalBlob;
-    },
-  ) : async Text {
+  // Master Admin and Office Staff can add fabric entries.
+  public shared ({ caller }) func addFabricEntry(rackId : Text, fabric : {
+    fabricName : Text;
+    quantity : Float;
+    fabricPhoto : ?Storage.ExternalBlob;
+    purchaseDate : ?Int;
+    billPhoto : ?Storage.ExternalBlob;
+  }) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only Master Admin and Office Staff can add fabric entries");
     };
@@ -119,7 +159,7 @@ actor {
     "Fabric successfully added!";
   };
 
-  // Master Admin, Office Staff, and Workers can update fabric quantities
+  // Master Admin, Office Staff, and Workers can update fabric quantities.
   public shared ({ caller }) func updateFabricQuantity(rackId : Text, usedQuantity : Float) : async Text {
     if (caller.isAnonymous()) {
       Runtime.trap("Unauthorized: Anonymous users cannot update fabric quantities");
@@ -139,7 +179,7 @@ actor {
     };
   };
 
-  // Master Admin and Office Staff can remove fabric entries
+  // Master Admin and Office Staff can remove fabric entries.
   public shared ({ caller }) func removeFabricEntry(rackId : Text) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only Master Admin and Office Staff can remove fabric entries");
@@ -154,7 +194,7 @@ actor {
     };
   };
 
-  // User management - Only Master Admin can create users
+  // User management - Only Master Admin can create users.
   public shared ({ caller }) func createUser(userPrincipal : Principal, name : Text, username : Text, role : Text) : async Text {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Only Master Admin can create users");
@@ -176,14 +216,14 @@ actor {
     };
     userProfiles.add(userPrincipal, profile);
 
-    // Assign the role in the access control system
+    // Assign the role in the access control system.
     AccessControl.assignRole(accessControlState, caller, userPrincipal, internalRole);
 
     addAuditLogEntry(caller, "Created User: " # username, "", "", 0);
     "User successfully created!";
   };
 
-  // Only Master Admin can assign/change roles
+  // Only Master Admin can assign/change roles.
   public shared ({ caller }) func assignUserRole(userPrincipal : Principal, role : Text) : async Text {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Only Master Admin can assign roles");
@@ -209,12 +249,12 @@ actor {
     "Role successfully assigned!";
   };
 
-  // Only Master Admin can list all users
-  public query ({ caller }) func getAllUsers() : async [(Principal, UserProfile)] {
+  // Only Master Admin can list all users.
+  public query ({ caller }) func getAllInventoryFabricEntries() : async [(Text, FabricInventoryEntry)] {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Only Master Admin can view all users");
     };
-    userProfiles.toArray();
+    inventory.toArray();
   };
 
   // Audit log management

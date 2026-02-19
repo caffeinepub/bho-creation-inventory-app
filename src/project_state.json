@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 11,
+  "projectStateVersion": 19,
   "summary": "Web-based inventory management application for Bho Creation clothing manufacturing company. Track fabric stock using barcode scanning (via device camera). Features: role-based authentication (Master Admin, Office Staff, Workers), individual user accounts with ID/password, fabric inventory management with add/remove/deduct quantities, complete audit trail tracking who added/removed fabrics, real-time data sync across all users. Admin panel for user management and permission assignment. Email-based password reset for office staff. Mobile-responsive design for phone/desktop browsers.",
   "architectural_notes": [
     "Cloud backend needed for multi-user sync (Firebase or similar)",
@@ -17,6 +17,7 @@
     "Previous build attempts failed due to Android/web platform mismatch"
   ],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Professional clothing brand logo for Bho Creation featuring fashion/garment industry elements like thread, fabric, or clothing silhouettes with clean modern design (bho-creation-logo.dim_200x200.png)",
   "existing_features": [
     {
       "id": "feature-implement-user-authentication-system-allowing-users-to-create-accounts-with-username-and-password-log-in-and-maintain-separate-inventory-data-per-user-account",
@@ -143,6 +144,94 @@
       "title": "Redesign the LoginPage component (frontend/src/pages/LoginPage.tsx) to match the visual style and layout shown in the provided video reference, updating the layout structure, color scheme, typography, spacing, and component arrangement while preserving the Internet Identity authentication functionality and existing feature highlights",
       "reqIds": [
         "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-an-adminpanel-page-component-frontend-src-pages-adminpanel-tsx-that-displays-a-list-of-all-user-accounts-with-their-usernames-names-roles-and-creation-dates",
+      "title": "Create an AdminPanel page component (frontend/src/pages/AdminPanel.tsx) that displays a list of all user accounts with their usernames, names, roles, and creation dates",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-create-new-user-form-within-the-adminpanel-that-allows-admins-to-input-username-full-name-initial-password-and-select-a-role-master-admin-office-staff-worker-to-create-new-user-accounts",
+      "title": "Add a 'Create New User' form within the AdminPanel that allows admins to input username, full name, initial password, and select a role (Master Admin, Office Staff, Worker) to create new user accounts",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-edit-capabilities-to-the-adminpanel-allowing-admins-to-update-existing-user-roles-and-reset-passwords-for-user-accounts",
+      "title": "Add edit capabilities to the AdminPanel allowing admins to update existing user roles and reset passwords for user accounts",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-react-query-hooks-in-frontend-src-hooks-usequeries-ts-for-fetching-all-users-creating-users-updating-user-roles-and-resetting-passwords",
+      "title": "Create React Query hooks in frontend/src/hooks/useQueries.ts for fetching all users, creating users, updating user roles, and resetting passwords",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-admin-panel-navigation-link-to-the-layout-component-header-that-is-only-visible-to-users-with-master-admin-role",
+      "title": "Add an 'Admin Panel' navigation link to the Layout component header that is only visible to users with Master Admin role",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-role-based-route-protection-for-the-adminpanel-page-to-ensure-only-users-with-master-admin-role-can-access-it",
+      "title": "Implement role-based route protection for the AdminPanel page to ensure only users with Master Admin role can access it",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-self-promotion-ui-element-on-the-adminpanel-page-that-allows-the-current-user-to-promote-themselves-to-master-admin-role-if-they-don-t-already-have-admin-access",
+      "title": "Add a self-promotion UI element on the AdminPanel page that allows the current user to promote themselves to Master Admin role if they don't already have admin access",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-route-protection-logic-in-app-tsx-to-allow-users-without-master-admin-role-to-access-the-adminpanel-page-temporarily-for-self-promotion-while-still-protecting-other-admin-functions",
+      "title": "Update the route protection logic in App.tsx to allow users without Master Admin role to access the AdminPanel page temporarily for self-promotion, while still protecting other admin functions",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-logo-in-the-site-header-layout-component-next-to-bho-creation-text-with-the-uploaded-logo-image-101843004-247003263392167-3873501175990976512-n-jpg-ensuring-proper-sizing-and-alignment-with-the-company-name",
+      "title": "Replace the existing logo in the site header (Layout component) next to 'Bho Creation' text with the uploaded logo image (101843004_247003263392167_3873501175990976512_n.jpg), ensuring proper sizing and alignment with the company name",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-store-the-uploaded-logo-image-as-a-static-asset-in-frontend-public-assets-generated-and-reference-it-from-the-layout-component",
+      "title": "Store the uploaded logo image as a static asset in frontend/public/assets/generated/ and reference it from the Layout component",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-current-logo-image-101843004-247003263392167-3873501175990976512-n-jpg-used-in-the-layout-component-header-with-a-new-clothing-brand-appropriate-logo-that-better-represents-bho-creation-as-a-clothing-manufacturing-company",
+      "title": "Replace the current logo image (101843004_247003263392167_3873501175990976512_n.jpg) used in the Layout component header with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
+      "reqIds": [
+        "REQ-34"
       ],
       "version": 1
     }
@@ -276,6 +365,30 @@
       "id": "AR-25",
       "summary": "Redesign login page to match reference video style",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Extend the backend main.mo actor to add functions for listing all users, creating new user accounts with username/name/password/role, updating user roles, and resetting user passwords",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Update the backend main.mo actor to add a new administrative function that promotes the currently authenticated user (caller) to Master Admin role, allowing them to manage all users and access the admin panel",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Update the Layout component (frontend/src/components/Layout.tsx) to reference the new clothing brand logo image file instead of the current 101843004_247003263392167_3873501175990976512_n.jpg",
+      "reqIds": [
+        "REQ-35"
+      ],
       "status": "pending"
     }
   ],

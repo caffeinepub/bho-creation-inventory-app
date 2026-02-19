@@ -2,12 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-redesign-the-loginpage-component-frontend-src-pages-loginpage-tsx-to-match-the-visual-style-and-layout-shown-in-the-provided-video-reference-updating-the-layout-structure-color-scheme-typography-spacing-and-component-arrangement-while-preserving-the-internet-identity-authentication-functionality-and-existing-feature-highlights",
-      "featureTitle": "Redesign the LoginPage component (frontend/src/pages/LoginPage.tsx) to match the visual style and layout shown in the provided video reference, updating the layout structure, color scheme, typography, spacing, and component arrangement while preserving the Internet Identity authentication functionality and existing feature highlights",
-      "files": [
-        "frontend/src/index.css",
-        "frontend/src/pages/LoginPage.tsx"
-      ],
+      "featureId": "feature-replace-the-current-logo-image-101843004-247003263392167-3873501175990976512-n-jpg-used-in-the-layout-component-header-with-a-new-clothing-brand-appropriate-logo-that-better-represents-bho-creation-as-a-clothing-manufacturing-company",
+      "featureTitle": "Replace the current logo image (101843004_247003263392167_3873501175990976512_n.jpg) used in the Layout component header with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
+      "files": [],
       "components": [
         "authorization@4.0.0",
         "qr-code@1.0.0",
@@ -20,7 +17,7 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-21"
+        "REQ-34"
       ],
       "confidence": "high"
     }

@@ -79,6 +79,10 @@ export interface _SERVICE {
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'assignUserRole' : ActorMethod<[Principal, string], string>,
   'createUser' : ActorMethod<[Principal, string, string, string], string>,
+  'getAllInventoryFabricEntries' : ActorMethod<
+    [],
+    Array<[string, FabricInventoryEntry]>
+  >,
   'getAllUsers' : ActorMethod<[], Array<[Principal, UserProfile]>>,
   'getAuditLog' : ActorMethod<[], Array<AuditLogEntry>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
@@ -86,6 +90,10 @@ export interface _SERVICE {
   'getInventory' : ActorMethod<[], Array<[string, FabricInventoryEntry]>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'promoteToMasterAdmin' : ActorMethod<
+    [{ 'username' : string, 'name' : string }],
+    string
+  >,
   'removeFabricEntry' : ActorMethod<[string], string>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'updateFabricQuantity' : ActorMethod<[string, number], string>,

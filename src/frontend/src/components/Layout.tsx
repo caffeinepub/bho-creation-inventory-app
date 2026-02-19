@@ -1,9 +1,10 @@
 import { ReactNode } from 'react';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Package, LayoutDashboard, Scan, Plus } from 'lucide-react';
+import { LayoutDashboard, Scan, Plus, Shield } from 'lucide-react';
 import LoginButton from './LoginButton';
 import { useGetCallerUserProfile } from '../hooks/useGetCallerUserProfile';
+import { UserRole } from '../backend';
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ export default function Layout({ children }: LayoutProps) {
   const { data: userProfile } = useGetCallerUserProfile();
 
   const currentPath = routerState.location.pathname;
+  const isAdmin = userProfile?.role === UserRole.admin;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
@@ -23,9 +25,11 @@ export default function Layout({ children }: LayoutProps) {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-600 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
-                <Package className="w-6 h-6 text-white" />
-              </div>
+              <img 
+                src="/assets/generated/boh-creation-logo.dim_200x200.png" 
+                alt="Boh Creation Logo" 
+                className="w-10 h-10 object-contain"
+              />
               <div>
                 <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-50">
                   Bho Creation
@@ -63,13 +67,23 @@ export default function Layout({ children }: LayoutProps) {
                 <Plus className="w-4 h-4 mr-2" />
                 Add Fabric
               </Button>
+              {isAdmin && (
+                <Button
+                  onClick={() => navigate({ to: '/admin' })}
+                  variant={currentPath === '/admin' ? 'default' : 'ghost'}
+                  className={currentPath === '/admin' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}
+                >
+                  <Shield className="w-4 h-4 mr-2" />
+                  Admin Panel
+                </Button>
+              )}
             </nav>
 
             <LoginButton />
           </div>
 
           {/* Mobile Navigation */}
-          <nav className="md:hidden flex items-center gap-2 mt-4">
+          <nav className="md:hidden flex items-center gap-2 mt-4 overflow-x-auto">
             <Button
               onClick={() => navigate({ to: '/' })}
               variant={currentPath === '/' ? 'default' : 'outline'}
@@ -97,6 +111,17 @@ export default function Layout({ children }: LayoutProps) {
               <Plus className="w-4 h-4 mr-1" />
               Add
             </Button>
+            {isAdmin && (
+              <Button
+                onClick={() => navigate({ to: '/admin' })}
+                variant={currentPath === '/admin' ? 'default' : 'outline'}
+                size="sm"
+                className={currentPath === '/admin' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}
+              >
+                <Shield className="w-4 h-4 mr-1" />
+                Admin
+              </Button>
+            )}
           </nav>
         </div>
       </header>

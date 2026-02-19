@@ -5,9 +5,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import DashboardPage from './pages/DashboardPage';
 import ScanPage from './pages/ScanPage';
 import AddFabricPage from './pages/AddFabricPage';
+import AdminPanel from './pages/AdminPanel';
 import ProfileSetupModal from './components/ProfileSetupModal';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
+import { UserRole } from './backend';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 function RootComponent() {
   const { identity, loginStatus } = useInternetIdentity();
@@ -68,7 +72,13 @@ const addFabricRoute = createRoute({
   component: AddFabricPage,
 });
 
-const routeTree = rootRoute.addChildren([dashboardRoute, scanRoute, addFabricRoute]);
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin',
+  component: AdminPanel,
+});
+
+const routeTree = rootRoute.addChildren([dashboardRoute, scanRoute, addFabricRoute, adminRoute]);
 
 const router = createRouter({ routeTree });
 

@@ -1,28 +1,38 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Redesign Login Page to Match Video Reference Style",
+  "title": "Replace logo with clothing brand appropriate image",
   "requirements": [
     {
-      "id": "REQ-21",
-      "summary": "Redesign the LoginPage component to match the visual style and layout shown in the provided video reference while preserving Internet Identity authentication and feature highlights",
+      "id": "REQ-34",
+      "summary": "Replace the current logo image with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
       "acceptanceCriteria": [
-        "Login page visual design closely matches the reference video style",
-        "Layout, colors, typography, and spacing reflect the video design",
-        "Internet Identity login functionality remains intact",
-        "Page is responsive and works on mobile and desktop",
-        "All existing feature highlights are preserved or adapted to new design"
+        "New logo image is displayed in the site header corner next to 'Bho Creation' text",
+        "Logo visually represents a clothing/fashion brand aesthetic",
+        "Logo maintains proper sizing and alignment with the company name",
+        "Logo is stored as a static asset in frontend/public/assets/generated/"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/LoginPage.tsx",
-          "operation": "modify",
-          "description": "Redesign the LoginPage component to match the video reference style. Update the layout structure to use a modern split-screen or centered card design as shown in the video. Revise the color scheme to incorporate gradients, shadows, and visual effects that align with the video aesthetic while maintaining compatibility with the existing warm OKLCH color palette (avoiding blue and purple). Update typography, spacing, and component arrangement to reflect the video design. Preserve the Internet Identity authentication functionality by keeping the existing LoginButton integration. Retain all existing feature highlights (barcode scanning, stock management, real-time sync) but adapt their presentation to the new design style. Ensure responsive behavior for both mobile and desktop viewports. Do not modify the authentication mechanism or related hooks."
-        },
+          "path": "frontend/public/assets/generated/bho-creation-logo.dim_200x200.png",
+          "operation": "create",
+          "description": "Add the generated clothing brand logo image to the static assets directory. This logo features fashion/garment industry elements and will replace the existing 101843004_247003263392167_3873501175990976512_n.jpg file."
+        }
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "summary": "Update the Layout component to reference the new clothing brand logo image file",
+      "acceptanceCriteria": [
+        "Layout component imports and displays the new logo image",
+        "Image path correctly references frontend/public/assets/generated/ directory",
+        "Logo renders properly in both mobile and desktop views"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Add any additional global styles, animations, or CSS custom properties needed to support the new LoginPage design. This may include keyframe animations, gradient definitions, or utility classes that complement the video reference aesthetic while staying within the warm color palette constraint. Keep existing Tailwind base configuration intact."
+          "description": "Update the logo image reference from 101843004_247003263392167_3873501175990976512_n.jpg to the new generated logo at frontend/public/assets/generated/bho-creation-logo.dim_200x200.png. Ensure the image path is correctly referenced in the img tag and maintains proper sizing and alignment with the 'Bho Creation' company name text in both mobile and desktop layouts."
         }
       ]
     }

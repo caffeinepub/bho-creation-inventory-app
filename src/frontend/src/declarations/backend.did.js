@@ -25,6 +25,14 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const FabricInventoryEntry = IDL.Record({
+  'fabricName' : IDL.Text,
+  'purchaseDate' : IDL.Opt(IDL.Int),
+  'billPhoto' : IDL.Opt(ExternalBlob),
+  'fabricPhoto' : IDL.Opt(ExternalBlob),
+  'quantity' : IDL.Float64,
+  'rackId' : IDL.Text,
+});
 export const UserProfile = IDL.Record({
   'username' : IDL.Text,
   'name' : IDL.Text,
@@ -35,14 +43,6 @@ export const AuditLogEntry = IDL.Record({
   'fabricName' : IDL.Text,
   'userId' : IDL.Text,
   'timestamp' : IDL.Int,
-  'quantity' : IDL.Float64,
-  'rackId' : IDL.Text,
-});
-export const FabricInventoryEntry = IDL.Record({
-  'fabricName' : IDL.Text,
-  'purchaseDate' : IDL.Opt(IDL.Int),
-  'billPhoto' : IDL.Opt(ExternalBlob),
-  'fabricPhoto' : IDL.Opt(ExternalBlob),
   'quantity' : IDL.Float64,
   'rackId' : IDL.Text,
 });
@@ -96,6 +96,11 @@ export const idlService = IDL.Service({
       [IDL.Text],
       [],
     ),
+  'getAllInventoryFabricEntries' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Text, FabricInventoryEntry))],
+      ['query'],
+    ),
   'getAllUsers' : IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Principal, UserProfile))],
@@ -115,6 +120,11 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'promoteToMasterAdmin' : IDL.Func(
+      [IDL.Record({ 'username' : IDL.Text, 'name' : IDL.Text })],
+      [IDL.Text],
+      [],
+    ),
   'removeFabricEntry' : IDL.Func([IDL.Text], [IDL.Text], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'updateFabricQuantity' : IDL.Func([IDL.Text, IDL.Float64], [IDL.Text], []),
@@ -140,6 +150,14 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const FabricInventoryEntry = IDL.Record({
+    'fabricName' : IDL.Text,
+    'purchaseDate' : IDL.Opt(IDL.Int),
+    'billPhoto' : IDL.Opt(ExternalBlob),
+    'fabricPhoto' : IDL.Opt(ExternalBlob),
+    'quantity' : IDL.Float64,
+    'rackId' : IDL.Text,
+  });
   const UserProfile = IDL.Record({
     'username' : IDL.Text,
     'name' : IDL.Text,
@@ -150,14 +168,6 @@ export const idlFactory = ({ IDL }) => {
     'fabricName' : IDL.Text,
     'userId' : IDL.Text,
     'timestamp' : IDL.Int,
-    'quantity' : IDL.Float64,
-    'rackId' : IDL.Text,
-  });
-  const FabricInventoryEntry = IDL.Record({
-    'fabricName' : IDL.Text,
-    'purchaseDate' : IDL.Opt(IDL.Int),
-    'billPhoto' : IDL.Opt(ExternalBlob),
-    'fabricPhoto' : IDL.Opt(ExternalBlob),
     'quantity' : IDL.Float64,
     'rackId' : IDL.Text,
   });
@@ -211,6 +221,11 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Text],
         [],
       ),
+    'getAllInventoryFabricEntries' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, FabricInventoryEntry))],
+        ['query'],
+      ),
     'getAllUsers' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(IDL.Principal, UserProfile))],
@@ -230,6 +245,11 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'promoteToMasterAdmin' : IDL.Func(
+        [IDL.Record({ 'username' : IDL.Text, 'name' : IDL.Text })],
+        [IDL.Text],
+        [],
+      ),
     'removeFabricEntry' : IDL.Func([IDL.Text], [IDL.Text], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'updateFabricQuantity' : IDL.Func([IDL.Text, IDL.Float64], [IDL.Text], []),

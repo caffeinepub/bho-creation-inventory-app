@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import type { UserProfile, FabricInventoryEntry, ExternalBlob } from '../backend';
+import { Principal } from '@dfinity/principal';
 
 export function useSaveCallerUserProfile() {
   const { actor } = useActor();
@@ -78,6 +79,88 @@ export function useUpdateFabricQuantity() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory'] });
+    },
+  });
+}
+
+// User Management Hooks
+export function useGetAllUsers() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Array<[Principal, UserProfile]>>({
+    queryKey: ['allUsers'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getAllUsers();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useCreateUser() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      userPrincipal,
+      name,
+      username,
+      role,
+    }: {
+      userPrincipal: Principal;
+      name: string;
+      username: string;
+      role: string;
+    }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.createUser(userPrincipal, name, username, role);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+    },
+  });
+}
+
+export function useUpdateUserRole() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      userPrincipal,
+      role,
+    }: {
+      userPrincipal: Principal;
+      role: string;
+    }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.assignUserRole(userPrincipal, role);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+    },
+  });
+}
+
+export function usePromoteToMasterAdmin() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      username,
+      name,
+    }: {
+      username: string;
+      name: string;
+    }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.promoteToMasterAdmin({ username, name });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['allUsers'] });
     },
   });
 }

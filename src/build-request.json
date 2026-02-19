@@ -1,41 +1,58 @@
 {
   "kind": "build_request",
-  "title": "Redesign login page to match video reference style",
+  "title": "Replace logo with clothing brand appropriate image",
+  "projectName": "Bho Creation Inventory",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-21",
-      "text": "Redesign the LoginPage component (frontend/src/pages/LoginPage.tsx) to match the visual style and layout shown in the provided video reference, updating the layout structure, color scheme, typography, spacing, and component arrangement while preserving the Internet Identity authentication functionality and existing feature highlights",
+      "id": "REQ-34",
+      "text": "Replace the current logo image (101843004_247003263392167_3873501175990976512_n.jpg) used in the Layout component header with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-latest"
         ],
         "quotes": [
-          "Make login page like this video"
+          "Replace the logo use in corner of the site and side of Boh creation name Because this is clothing brand"
         ]
       },
       "acceptanceCriteria": [
-        "Login page visual design closely matches the reference video style",
-        "Layout, colors, typography, and spacing reflect the video design",
-        "Internet Identity login functionality remains intact",
-        "Page is responsive and works on mobile and desktop",
-        "All existing feature highlights are preserved or adapted to new design"
+        "New logo image is displayed in the site header corner next to 'Bho Creation' text",
+        "Logo visually represents a clothing/fashion brand aesthetic",
+        "Logo maintains proper sizing and alignment with the company name",
+        "Logo is stored as a static asset in frontend/public/assets/generated/"
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "text": "Update the Layout component (frontend/src/components/Layout.tsx) to reference the new clothing brand logo image file instead of the current 101843004_247003263392167_3873501175990976512_n.jpg",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Layout component imports and displays the new logo image",
+        "Image path correctly references frontend/public/assets/generated/ directory",
+        "Logo renders properly in both mobile and desktop views"
       ]
     }
   ],
   "constraints": [
-    "Do not change the authentication mechanism (Internet Identity must remain)",
-    "Do not modify frontend/src/hooks/useInternetIdentity.ts or frontend/src/components/LoginButton.tsx",
-    "Maintain compatibility with existing warm color palette (avoid blue and purple)"
+    "Preserve existing Layout component structure and navigation functionality",
+    "Maintain current logo sizing and positioning relative to 'Bho Creation' text",
+    "Keep the logo as a static asset in frontend/public/assets/generated/"
   ],
   "nonGoals": [
-    "Changing the authentication system from Internet Identity to username/password",
-    "Adding new login features or functionality not shown in the video",
-    "Modifying other pages or components beyond the login page"
+    "Changing the company name 'Bho Creation'",
+    "Modifying the header layout or navigation structure",
+    "Altering color scheme or typography beyond the logo replacement"
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "Professional clothing brand logo for Bho Creation featuring fashion/garment industry elements like thread, fabric, or clothing silhouettes with clean modern design (bho-creation-logo.dim_200x200.png)"
+    ],
     "edits": []
   }
 }
