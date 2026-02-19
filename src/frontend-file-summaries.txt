@@ -1,0 +1,19 @@
+{
+  "frontend/src/App.tsx": "Main application component with TanStack Router setup, authentication flow, profile setup modal display, and protected routes for dashboard, scan, and add fabric pages.",
+  "frontend/src/pages/LoginPage.tsx": "Modern split-screen login page with animated background elements, feature highlights on the left, and an elevated login card on the right, featuring Internet Identity authentication with smooth animations and gradient effects while maintaining the warm amber/orange color palette.",
+  "frontend/src/pages/DashboardPage.tsx": "Main dashboard displaying inventory list with navigation buttons to scan and add fabric pages.",
+  "frontend/src/pages/ScanPage.tsx": "Barcode scanning page combining camera scanner and quantity deduction form in a two-column layout.",
+  "frontend/src/pages/AddFabricPage.tsx": "Form page for adding fabric entries with fields for name, rack ID, quantity, purchase date, fabric photo upload with preview, and bill photo upload with preview, including file validation and upload progress tracking.",
+  "frontend/src/components/Layout.tsx": "Application layout wrapper with header (logo, navigation, user profile, login button), main content area, and footer with attribution.",
+  "frontend/src/components/LoginButton.tsx": "Reusable login/logout button component using Internet Identity with loading states and query cache clearing on logout.",
+  "frontend/src/components/ProfileSetupModal.tsx": "Modal dialog for first-time user profile setup, collecting name and username with default admin role assignment and flash prevention.",
+  "frontend/src/components/InventoryList.tsx": "Table component displaying fabric inventory with search functionality that filters by fabric name or rack ID, photo thumbnails, fabric details, stock status badges, and action buttons to view full details or open photo lightbox, with loading and empty states.",
+  "frontend/src/components/BarcodeScannerView.tsx": "Camera-based QR/barcode scanner with preview, controls, error handling, and scan results list using the prefabricated useQRScanner hook.",
+  "frontend/src/components/QuantityDeductionForm.tsx": "Form for deducting fabric quantity from a scanned rack, showing current fabric details and validating input against available stock.",
+  "frontend/src/hooks/useGetCallerUserProfile.ts": "React Query hook for fetching current user profile with flash prevention pattern for profile setup modal.",
+  "frontend/src/hooks/useQueries.ts": "Collection of React Query hooks for backend operations including profile management, inventory fetching with full FabricInventoryEntry type, adding fabric entries with photo and date support, and updating quantities with automatic cache invalidation.",
+  "frontend/src/index.css": "Global styles with warm OKLCH color system for light and dark modes, plus custom keyframe animations for the login page including fade-in, slide-in, and float effects with reduced motion support.",
+  "frontend/tailwind.config.js": "Tailwind configuration with custom warm color palette, Inter font family, and custom shadows for professional manufacturing aesthetic.",
+  "frontend/src/components/ImageLightbox.tsx": "Modal lightbox component for displaying full-size images with backdrop click and ESC key support, styled with dark background for optimal image viewing.",
+  "frontend/src/components/InventoryDetailModal.tsx": "Modal dialog displaying complete fabric entry details including fabric photo, basic information, purchase date, and bill photo with clickable images that open in lightbox."
+}

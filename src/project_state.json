@@ -1,0 +1,286 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 11,
+  "summary": "Web-based inventory management application for Bho Creation clothing manufacturing company. Track fabric stock using barcode scanning (via device camera). Features: role-based authentication (Master Admin, Office Staff, Workers), individual user accounts with ID/password, fabric inventory management with add/remove/deduct quantities, complete audit trail tracking who added/removed fabrics, real-time data sync across all users. Admin panel for user management and permission assignment. Email-based password reset for office staff. Mobile-responsive design for phone/desktop browsers.",
+  "architectural_notes": [
+    "Cloud backend needed for multi-user sync (Firebase or similar)",
+    "User authentication system with login/password",
+    "Real-time data synchronization across devices",
+    "Web application built with React + TypeScript frontend and Motoko backend on Internet Computer",
+    "Device camera integration for barcode scanning in web browsers",
+    "Mobile-responsive design for phone and desktop browsers",
+    "Three-tier role hierarchy: Master Admin > Office Staff > Workers",
+    "Image storage and retrieval system needed for fabric photos and bill receipts"
+  ],
+  "known_issues": [
+    "Platform limitation: Cannot build Android native apps or generate Android Studio code",
+    "Previous build attempts failed due to Android/web platform mismatch"
+  ],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-implement-user-authentication-system-allowing-users-to-create-accounts-with-username-and-password-log-in-and-maintain-separate-inventory-data-per-user-account",
+      "title": "Implement user authentication system allowing users to create accounts with username and password, log in, and maintain separate inventory data per user account",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-barcode-scanning-functionality-to-identify-racks-and-allow-users-to-input-deducted-fabric-quantity-e-g-10-meters-automatically-updating-the-remaining-stock-for-that-rack-s-fabric",
+      "title": "Implement barcode scanning functionality to identify racks and allow users to input deducted fabric quantity (e.g., 10 meters), automatically updating the remaining stock for that rack's fabric",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-an-inventory-dashboard-view-displaying-all-fabrics-with-their-details-fabric-type-rack-location-barcode-and-available-quantity-in-meters-updated-in-real-time-as-stock-changes",
+      "title": "Create an inventory dashboard view displaying all fabrics with their details: fabric type, rack location (barcode), and available quantity in meters, updated in real-time as stock changes",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-a-professional-and-intuitive-user-interface-with-a-modern-clean-aesthetic-suitable-for-an-industrial-inventory-management-application-using-a-warm-professional-color-palette-avoid-blue-and-purple-and-clear-typography-for-readability-in-a-warehouse-environment",
+      "title": "Design a professional and intuitive user interface with a modern, clean aesthetic suitable for an industrial inventory management application, using a warm, professional color palette (avoid blue and purple) and clear typography for readability in a warehouse environment",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-master-admin-panel-that-allows-the-master-admin-to-view-all-users-create-new-user-accounts-with-unique-id-and-password-assign-roles-master-admin-office-staff-worker-and-manage-user-permissions",
+      "title": "Create a Master Admin panel that allows the Master Admin to view all users, create new user accounts with unique ID and password, assign roles (Master Admin, Office Staff, Worker), and manage user permissions",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-complete-audit-trail-system-that-logs-every-inventory-change-with-details-who-performed-the-action-user-id-name-what-action-was-taken-added-removed-fabric-quantity-deducted-which-fabric-was-affected-timestamp-of-the-change-and-previous-new-values",
+      "title": "Implement a complete audit trail system that logs every inventory change with details: who performed the action (user ID/name), what action was taken (added/removed fabric, quantity deducted), which fabric was affected, timestamp of the change, and previous/new values",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-all-inventory-data-synchronizes-in-real-time-across-all-active-user-sessions-so-that-when-any-user-updates-inventory-data-adds-fabric-deducts-quantity-removes-entry-all-other-logged-in-users-see-the-changes-immediately-without-needing-to-refresh",
+      "title": "Ensure all inventory data synchronizes in real-time across all active user sessions so that when any user updates inventory data (adds fabric, deducts quantity, removes entry), all other logged-in users see the changes immediately without needing to refresh",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-photo-field-to-each-fabric-inventory-entry-to-store-an-uploaded-image-of-the-fabric-or-product",
+      "title": "Add a photo field to each fabric inventory entry to store an uploaded image of the fabric or product",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-purchase-date-field-to-each-fabric-inventory-entry-to-track-when-the-fabric-was-purchased",
+      "title": "Add a purchase date field to each fabric inventory entry to track when the fabric was purchased",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-bill-receipt-photo-upload-field-to-each-fabric-inventory-entry-to-store-an-image-of-the-purchase-bill",
+      "title": "Add a bill/receipt photo upload field to each fabric inventory entry to store an image of the purchase bill",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-add-fabric-form-to-include-file-upload-inputs-for-fabric-photo-and-bill-photo-and-a-date-picker-for-purchase-date",
+      "title": "Update the Add Fabric form to include file upload inputs for fabric photo and bill photo, and a date picker for purchase date",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-inventory-list-view-to-display-fabric-photo-thumbnails-alongside-each-fabric-entry",
+      "title": "Update the inventory list view to display fabric photo thumbnails alongside each fabric entry",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-inventory-detail-view-to-display-the-purchase-date-and-provide-access-to-view-the-full-bill-photo",
+      "title": "Update the inventory detail view to display the purchase date and provide access to view the full bill photo",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-search-input-field-to-the-inventory-dashboard-that-allows-users-to-filter-the-fabric-list-by-typing-fabric-name-or-rack-id-barcode-code",
+      "title": "Add a search input field to the inventory dashboard that allows users to filter the fabric list by typing fabric name or rack ID (barcode/code)",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-inventorylist-component-to-implement-client-side-filtering-logic-that-matches-user-input-against-fabric-name-and-rack-id-fields",
+      "title": "Update the InventoryList component to implement client-side filtering logic that matches user input against fabric name and rack ID fields",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-redesign-the-loginpage-component-frontend-src-pages-loginpage-tsx-to-match-the-visual-style-and-layout-shown-in-the-provided-video-reference-updating-the-layout-structure-color-scheme-typography-spacing-and-component-arrangement-while-preserving-the-internet-identity-authentication-functionality-and-existing-feature-highlights",
+      "title": "Redesign the LoginPage component (frontend/src/pages/LoginPage.tsx) to match the visual style and layout shown in the provided video reference, updating the layout structure, color scheme, typography, spacing, and component arrangement while preserving the Internet Identity authentication functionality and existing feature highlights",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Barcode scanning system for rack identification",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Fabric quantity deduction and automatic stock update",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Inventory view showing all fabrics with available meters",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Multi-user login/authentication system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Online/cloud data sync across user sessions",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Create a fabric inventory management system where each fabric entry stores: fabric name/type, rack identifier (barcode), quantity in meters, and allows tracking multiple fabrics across different racks",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Ensure real-time data synchronization across all user sessions so that when one user updates inventory data, any other user accessing the same account sees the updated information immediately",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Master Admin panel for managing all users, assigning roles (Master Admin, Office Staff, Worker), and permission management",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Role-based access control with three levels: Master Admin (full control), Office Staff (add/remove products, manage inventory, view audit logs), Workers (add/reduce fabric quantities only)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Individual user accounts with unique ID and password for each worker and staff member",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Complete audit trail system showing who added/removed which fabric, when, and what changes were made",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Email-based password reset functionality for office staff",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Implement three-tier role-based access control: Master Admin (full control including user management), Office Staff (add/remove products, manage inventory, view audit logs), Workers (add/reduce fabric quantities only)",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Replace Internet Identity authentication with individual user accounts where each user has a unique user ID and password for login",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Add email-based password reset functionality allowing office staff to request a password reset link via email, receive a secure reset link, and set a new password",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Add fabric/product photo upload capability to inventory items",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Add purchase date field to track when each fabric was purchased",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Add bill/receipt photo upload capability to inventory items",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Add search functionality to find fabrics/products by name or barcode/code",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Redesign login page to match reference video style",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Bho Creation Inventory App",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

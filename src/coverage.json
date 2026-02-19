@@ -1,0 +1,40 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-19T18:21:21.739Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 1,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-21",
+        "summary": "Redesign the LoginPage component (frontend/src/pages/LoginPage.tsx) to match the visual style and layout shown in the provided video reference, updating the layout structure, color scheme, typography, spacing, and component arrangement while preserving the Internet Identity authentication functionality and existing feature highlights",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/index.css"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/index.css",
+    "frontend/src/pages/LoginPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

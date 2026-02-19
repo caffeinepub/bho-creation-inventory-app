@@ -1,0 +1,30 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Redesign Login Page to Match Video Reference Style",
+  "requirements": [
+    {
+      "id": "REQ-21",
+      "summary": "Redesign the LoginPage component to match the visual style and layout shown in the provided video reference while preserving Internet Identity authentication and feature highlights",
+      "acceptanceCriteria": [
+        "Login page visual design closely matches the reference video style",
+        "Layout, colors, typography, and spacing reflect the video design",
+        "Internet Identity login functionality remains intact",
+        "Page is responsive and works on mobile and desktop",
+        "All existing feature highlights are preserved or adapted to new design"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Redesign the LoginPage component to match the video reference style. Update the layout structure to use a modern split-screen or centered card design as shown in the video. Revise the color scheme to incorporate gradients, shadows, and visual effects that align with the video aesthetic while maintaining compatibility with the existing warm OKLCH color palette (avoiding blue and purple). Update typography, spacing, and component arrangement to reflect the video design. Preserve the Internet Identity authentication functionality by keeping the existing LoginButton integration. Retain all existing feature highlights (barcode scanning, stock management, real-time sync) but adapt their presentation to the new design style. Ensure responsive behavior for both mobile and desktop viewports. Do not modify the authentication mechanism or related hooks."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add any additional global styles, animations, or CSS custom properties needed to support the new LoginPage design. This may include keyframe animations, gradient definitions, or utility classes that complement the video reference aesthetic while staying within the warm color palette constraint. Keep existing Tailwind base configuration intact."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "kind": "build_request",
+  "title": "Redesign login page to match video reference style",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-21",
+      "text": "Redesign the LoginPage component (frontend/src/pages/LoginPage.tsx) to match the visual style and layout shown in the provided video reference, updating the layout structure, color scheme, typography, spacing, and component arrangement while preserving the Internet Identity authentication functionality and existing feature highlights",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "Make login page like this video"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Login page visual design closely matches the reference video style",
+        "Layout, colors, typography, and spacing reflect the video design",
+        "Internet Identity login functionality remains intact",
+        "Page is responsive and works on mobile and desktop",
+        "All existing feature highlights are preserved or adapted to new design"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not change the authentication mechanism (Internet Identity must remain)",
+    "Do not modify frontend/src/hooks/useInternetIdentity.ts or frontend/src/components/LoginButton.tsx",
+    "Maintain compatibility with existing warm color palette (avoid blue and purple)"
+  ],
+  "nonGoals": [
+    "Changing the authentication system from Internet Identity to username/password",
+    "Adding new login features or functionality not shown in the video",
+    "Modifying other pages or components beyond the login page"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
