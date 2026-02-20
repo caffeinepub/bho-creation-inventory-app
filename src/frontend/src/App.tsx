@@ -7,27 +7,36 @@ import ScanPage from './pages/ScanPage';
 import AddFabricPage from './pages/AddFabricPage';
 import AdminPanel from './pages/AdminPanel';
 import ProfileSetupModal from './components/ProfileSetupModal';
+import InstallPrompt from './components/InstallPrompt';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import { UserRole } from './backend';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { useCredentialAuth } from './hooks/useQueries';
 
 function RootComponent() {
   const { identity, loginStatus } = useInternetIdentity();
   const { data: userProfile, isLoading: profileLoading, isFetched } = useGetCallerUserProfile();
+  const credentialAuth = useCredentialAuth();
   const navigate = useNavigate();
 
-  const isAuthenticated = !!identity;
-  const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
+  // Check if user is authenticated via either method
+  const isAuthenticated = !!identity || credentialAuth.isAuthenticated;
+  
+  // For credential auth, we already have the profile from login
+  const currentProfile = credentialAuth.isAuthenticated ? credentialAuth.profile : userProfile;
+  
+  // Only show profile setup for Internet Identity users (not credential users)
+  const showProfileSetup = !!identity && !credentialAuth.isAuthenticated && !profileLoading && isFetched && userProfile === null;
 
   // Redirect to login if not authenticated
   if (!isAuthenticated && loginStatus !== 'logging-in' && loginStatus !== 'initializing') {
     return <LoginPage />;
   }
 
-  // Show loading while initializing or fetching profile
-  if (loginStatus === 'initializing' || (isAuthenticated && !isFetched)) {
+  // Show loading while initializing or fetching profile (only for Internet Identity)
+  if (loginStatus === 'initializing' || (!!identity && !credentialAuth.isAuthenticated && !isFetched)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center">
@@ -41,11 +50,12 @@ function RootComponent() {
   return (
     <>
       {showProfileSetup && <ProfileSetupModal />}
-      {isAuthenticated && userProfile && (
+      {isAuthenticated && currentProfile && (
         <Layout>
           <Outlet />
         </Layout>
       )}
+      {isAuthenticated && <InstallPrompt />}
     </>
   );
 }

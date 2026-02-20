@@ -25,13 +25,14 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const FabricInventoryEntry = IDL.Record({
+export const FabricEntry = IDL.Record({
   'fabricName' : IDL.Text,
   'purchaseDate' : IDL.Opt(IDL.Int),
   'billPhoto' : IDL.Opt(ExternalBlob),
+  'unit' : IDL.Text,
   'fabricPhoto' : IDL.Opt(ExternalBlob),
+  'itemType' : IDL.Text,
   'quantity' : IDL.Float64,
-  'rackId' : IDL.Text,
 });
 export const UserProfile = IDL.Record({
   'username' : IDL.Text,
@@ -46,13 +47,18 @@ export const AuditLogEntry = IDL.Record({
   'quantity' : IDL.Float64,
   'rackId' : IDL.Text,
 });
+export const LoginResult = IDL.Variant({
+  'error' : IDL.Text,
+  'success' : UserProfile,
+});
 export const UpdateFabricData = IDL.Record({
   'fabricName' : IDL.Text,
   'purchaseDate' : IDL.Opt(IDL.Int),
   'billPhoto' : IDL.Opt(ExternalBlob),
+  'unit' : IDL.Text,
   'fabricPhoto' : IDL.Opt(ExternalBlob),
+  'itemType' : IDL.Text,
   'quantity' : IDL.Float64,
-  'rackId' : IDL.Text,
 });
 
 export const idlService = IDL.Service({
@@ -90,7 +96,9 @@ export const idlService = IDL.Service({
           'fabricName' : IDL.Text,
           'purchaseDate' : IDL.Opt(IDL.Int),
           'billPhoto' : IDL.Opt(ExternalBlob),
+          'unit' : IDL.Text,
           'fabricPhoto' : IDL.Opt(ExternalBlob),
+          'itemType' : IDL.Text,
           'quantity' : IDL.Float64,
         }),
       ],
@@ -101,13 +109,13 @@ export const idlService = IDL.Service({
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'assignUserRole' : IDL.Func([IDL.Principal, IDL.Text], [IDL.Text], []),
   'createUser' : IDL.Func(
-      [IDL.Principal, IDL.Text, IDL.Text, IDL.Text],
+      [IDL.Principal, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [IDL.Text],
       [],
     ),
   'getAllInventoryFabricEntries' : IDL.Func(
       [],
-      [IDL.Vec(IDL.Tuple(IDL.Text, FabricInventoryEntry))],
+      [IDL.Vec(IDL.Tuple(IDL.Text, FabricEntry))],
       ['query'],
     ),
   'getAllUsers' : IDL.Func(
@@ -120,7 +128,7 @@ export const idlService = IDL.Service({
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getInventory' : IDL.Func(
       [],
-      [IDL.Vec(IDL.Tuple(IDL.Text, FabricInventoryEntry))],
+      [IDL.Vec(IDL.Tuple(IDL.Text, FabricEntry))],
       ['query'],
     ),
   'getUserProfile' : IDL.Func(
@@ -129,8 +137,19 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'loginWithCredentials' : IDL.Func(
+      [IDL.Text, IDL.Text],
+      [LoginResult],
+      ['query'],
+    ),
   'promoteToMasterAdmin' : IDL.Func(
-      [IDL.Record({ 'username' : IDL.Text, 'name' : IDL.Text })],
+      [
+        IDL.Record({
+          'username' : IDL.Text,
+          'password' : IDL.Text,
+          'name' : IDL.Text,
+        }),
+      ],
       [IDL.Text],
       [],
     ),
@@ -160,13 +179,14 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const FabricInventoryEntry = IDL.Record({
+  const FabricEntry = IDL.Record({
     'fabricName' : IDL.Text,
     'purchaseDate' : IDL.Opt(IDL.Int),
     'billPhoto' : IDL.Opt(ExternalBlob),
+    'unit' : IDL.Text,
     'fabricPhoto' : IDL.Opt(ExternalBlob),
+    'itemType' : IDL.Text,
     'quantity' : IDL.Float64,
-    'rackId' : IDL.Text,
   });
   const UserProfile = IDL.Record({
     'username' : IDL.Text,
@@ -181,13 +201,18 @@ export const idlFactory = ({ IDL }) => {
     'quantity' : IDL.Float64,
     'rackId' : IDL.Text,
   });
+  const LoginResult = IDL.Variant({
+    'error' : IDL.Text,
+    'success' : UserProfile,
+  });
   const UpdateFabricData = IDL.Record({
     'fabricName' : IDL.Text,
     'purchaseDate' : IDL.Opt(IDL.Int),
     'billPhoto' : IDL.Opt(ExternalBlob),
+    'unit' : IDL.Text,
     'fabricPhoto' : IDL.Opt(ExternalBlob),
+    'itemType' : IDL.Text,
     'quantity' : IDL.Float64,
-    'rackId' : IDL.Text,
   });
   
   return IDL.Service({
@@ -225,7 +250,9 @@ export const idlFactory = ({ IDL }) => {
             'fabricName' : IDL.Text,
             'purchaseDate' : IDL.Opt(IDL.Int),
             'billPhoto' : IDL.Opt(ExternalBlob),
+            'unit' : IDL.Text,
             'fabricPhoto' : IDL.Opt(ExternalBlob),
+            'itemType' : IDL.Text,
             'quantity' : IDL.Float64,
           }),
         ],
@@ -236,13 +263,13 @@ export const idlFactory = ({ IDL }) => {
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'assignUserRole' : IDL.Func([IDL.Principal, IDL.Text], [IDL.Text], []),
     'createUser' : IDL.Func(
-        [IDL.Principal, IDL.Text, IDL.Text, IDL.Text],
+        [IDL.Principal, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
         [IDL.Text],
         [],
       ),
     'getAllInventoryFabricEntries' : IDL.Func(
         [],
-        [IDL.Vec(IDL.Tuple(IDL.Text, FabricInventoryEntry))],
+        [IDL.Vec(IDL.Tuple(IDL.Text, FabricEntry))],
         ['query'],
       ),
     'getAllUsers' : IDL.Func(
@@ -255,7 +282,7 @@ export const idlFactory = ({ IDL }) => {
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getInventory' : IDL.Func(
         [],
-        [IDL.Vec(IDL.Tuple(IDL.Text, FabricInventoryEntry))],
+        [IDL.Vec(IDL.Tuple(IDL.Text, FabricEntry))],
         ['query'],
       ),
     'getUserProfile' : IDL.Func(
@@ -264,8 +291,19 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'loginWithCredentials' : IDL.Func(
+        [IDL.Text, IDL.Text],
+        [LoginResult],
+        ['query'],
+      ),
     'promoteToMasterAdmin' : IDL.Func(
-        [IDL.Record({ 'username' : IDL.Text, 'name' : IDL.Text })],
+        [
+          IDL.Record({
+            'username' : IDL.Text,
+            'password' : IDL.Text,
+            'name' : IDL.Text,
+          }),
+        ],
         [IDL.Text],
         [],
       ),

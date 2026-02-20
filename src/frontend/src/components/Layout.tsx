@@ -46,7 +46,7 @@ export default function Layout({ children }: LayoutProps) {
               <Button
                 onClick={() => navigate({ to: '/' })}
                 variant={currentPath === '/' ? 'default' : 'ghost'}
-                className={currentPath === '/' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}
+                className={`min-h-[44px] ${currentPath === '/' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}`}
               >
                 <LayoutDashboard className="w-4 h-4 mr-2" />
                 Dashboard
@@ -54,7 +54,7 @@ export default function Layout({ children }: LayoutProps) {
               <Button
                 onClick={() => navigate({ to: '/scan' })}
                 variant={currentPath === '/scan' ? 'default' : 'ghost'}
-                className={currentPath === '/scan' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}
+                className={`min-h-[44px] ${currentPath === '/scan' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}`}
               >
                 <Scan className="w-4 h-4 mr-2" />
                 Scan
@@ -62,7 +62,7 @@ export default function Layout({ children }: LayoutProps) {
               <Button
                 onClick={() => navigate({ to: '/add' })}
                 variant={currentPath === '/add' ? 'default' : 'ghost'}
-                className={currentPath === '/add' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}
+                className={`min-h-[44px] ${currentPath === '/add' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}`}
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Fabric
@@ -71,7 +71,7 @@ export default function Layout({ children }: LayoutProps) {
                 <Button
                   onClick={() => navigate({ to: '/admin' })}
                   variant={currentPath === '/admin' ? 'default' : 'ghost'}
-                  className={currentPath === '/admin' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}
+                  className={`min-h-[44px] ${currentPath === '/admin' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white' : ''}`}
                 >
                   <Shield className="w-4 h-4 mr-2" />
                   Admin Panel
@@ -83,12 +83,12 @@ export default function Layout({ children }: LayoutProps) {
           </div>
 
           {/* Mobile Navigation */}
-          <nav className="md:hidden flex items-center gap-2 mt-4 overflow-x-auto">
+          <nav className="md:hidden flex items-center gap-3 mt-4 overflow-x-auto">
             <Button
               onClick={() => navigate({ to: '/' })}
               variant={currentPath === '/' ? 'default' : 'outline'}
               size="sm"
-              className={currentPath === '/' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}
+              className={`min-h-[44px] py-3 px-4 ${currentPath === '/' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}`}
             >
               <LayoutDashboard className="w-4 h-4 mr-1" />
               Dashboard
@@ -97,7 +97,7 @@ export default function Layout({ children }: LayoutProps) {
               onClick={() => navigate({ to: '/scan' })}
               variant={currentPath === '/scan' ? 'default' : 'outline'}
               size="sm"
-              className={currentPath === '/scan' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}
+              className={`min-h-[44px] py-3 px-4 ${currentPath === '/scan' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}`}
             >
               <Scan className="w-4 h-4 mr-1" />
               Scan
@@ -106,7 +106,7 @@ export default function Layout({ children }: LayoutProps) {
               onClick={() => navigate({ to: '/add' })}
               variant={currentPath === '/add' ? 'default' : 'outline'}
               size="sm"
-              className={currentPath === '/add' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}
+              className={`min-h-[44px] py-3 px-4 ${currentPath === '/add' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}`}
             >
               <Plus className="w-4 h-4 mr-1" />
               Add
@@ -116,7 +116,7 @@ export default function Layout({ children }: LayoutProps) {
                 onClick={() => navigate({ to: '/admin' })}
                 variant={currentPath === '/admin' ? 'default' : 'outline'}
                 size="sm"
-                className={currentPath === '/admin' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}
+                className={`min-h-[44px] py-3 px-4 ${currentPath === '/admin' ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white flex-1' : 'flex-1'}`}
               >
                 <Shield className="w-4 h-4 mr-1" />
                 Admin

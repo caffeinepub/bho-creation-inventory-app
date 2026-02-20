@@ -64,7 +64,7 @@ export default function BarcodeScannerView({ onRackSelected }: BarcodeScannerVie
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Camera Preview */}
-        <div className="relative bg-neutral-900 rounded-lg overflow-hidden" style={{ aspectRatio: '4/3', minHeight: '300px' }}>
+        <div className="relative bg-neutral-900 rounded-lg overflow-hidden w-full" style={{ aspectRatio: '4/3', minHeight: '300px' }}>
           <video
             ref={videoRef}
             className="w-full h-full object-cover"
@@ -100,11 +100,11 @@ export default function BarcodeScannerView({ onRackSelected }: BarcodeScannerVie
         )}
 
         {/* Controls */}
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Button
             onClick={startScanning}
             disabled={!canStartScanning || isLoading}
-            className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
+            className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white min-h-[44px] py-3 px-6"
           >
             {isLoading ? (
               <>
@@ -122,7 +122,7 @@ export default function BarcodeScannerView({ onRackSelected }: BarcodeScannerVie
             onClick={stopScanning}
             disabled={isLoading || !isActive}
             variant="outline"
-            className="flex-1"
+            className="flex-1 min-h-[44px] py-3 px-6"
           >
             <CameraOff className="w-4 h-4 mr-2" />
             Stop Camera
@@ -133,6 +133,7 @@ export default function BarcodeScannerView({ onRackSelected }: BarcodeScannerVie
               disabled={isLoading || !isActive}
               variant="outline"
               size="icon"
+              className="min-h-[44px] min-w-[44px]"
             >
               <SwitchCamera className="w-4 h-4" />
             </Button>
@@ -146,7 +147,7 @@ export default function BarcodeScannerView({ onRackSelected }: BarcodeScannerVie
               <h4 className="text-sm font-semibold text-neutral-900 dark:text-neutral-50">
                 Scanned Barcodes ({qrResults.length})
               </h4>
-              <Button onClick={clearResults} variant="ghost" size="sm">
+              <Button onClick={clearResults} variant="ghost" size="sm" className="min-h-[44px]">
                 Clear
               </Button>
             </div>

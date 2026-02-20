@@ -2,11 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-an-edit-button-to-each-fabric-entry-in-the-inventory-list-inventorylist-component-that-opens-an-edit-modal-allowing-users-to-modify-all-fabric-details-including-fabric-name-rack-id-quantity-purchase-date-fabric-photo-and-bill-photo",
-      "featureTitle": "Add an edit button to each fabric entry in the inventory list (InventoryList component) that opens an edit modal allowing users to modify all fabric details including fabric name, rack ID, quantity, purchase date, fabric photo, and bill photo",
+      "featureId": "feature-create-a-web-app-manifest-file-frontend-public-manifest-json-that-defines-the-app-name-as-bho-creation-inventory-sets-the-app-as-standalone-display-mode-configures-app-icons-for-various-sizes-192x192-512x512-and-specifies-the-start-url-and-theme-colors-matching-the-current-amber-orange-color-scheme",
+      "featureTitle": "Create a Web App Manifest file (frontend/public/manifest.json) that defines the app name as 'Bho Creation Inventory', sets the app as standalone display mode, configures app icons for various sizes (192x192, 512x512), and specifies the start URL and theme colors matching the current amber/orange color scheme",
       "files": [
-        "frontend/src/components/FabricEditModal.tsx",
-        "frontend/src/components/InventoryList.tsx"
+        "frontend/public/manifest.json"
       ],
       "components": [
         "authorization@4.0.0",
@@ -20,15 +19,15 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-36"
+        "REQ-55"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-create-a-react-query-mutation-hook-useupdatefabricentry-in-usequeries-ts-that-calls-the-backend-updatefabricentry-function-and-invalidates-the-inventory-queries-on-success",
-      "featureTitle": "Create a React Query mutation hook useUpdateFabricEntry in useQueries.ts that calls the backend updateFabricEntry function and invalidates the inventory queries on success",
+      "featureId": "feature-register-a-service-worker-frontend-public-sw-js-that-implements-offline-caching-strategy-for-static-assets-html-css-js-images-and-enables-the-app-to-function-when-internet-connection-is-temporarily-unavailable",
+      "featureTitle": "Register a Service Worker (frontend/public/sw.js) that implements offline caching strategy for static assets (HTML, CSS, JS, images) and enables the app to function when internet connection is temporarily unavailable",
       "files": [
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/public/sw.js"
       ],
       "components": [
         "authorization@4.0.0",
@@ -42,15 +41,15 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-38"
+        "REQ-56"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-barcode-scanning-functionality-so-that-when-a-barcode-is-scanned-the-system-automatically-selects-the-fabric-entry-whose-name-or-rack-id-matches-the-scanned-code-and-displays-only-quantity-increase-decrease-controls-not-full-edit-options",
-      "featureTitle": "Update the barcode scanning functionality so that when a barcode is scanned, the system automatically selects the fabric entry whose name or rack ID matches the scanned code, and displays only quantity increase/decrease controls (not full edit options)",
+      "featureId": "feature-update-frontend-index-html-to-include-the-web-app-manifest-link-reference-and-add-meta-tags-for-mobile-app-configuration-including-viewport-settings-apple-mobile-web-app-capable-and-theme-color-meta-tags",
+      "featureTitle": "Update frontend/index.html to include the web app manifest link reference and add meta tags for mobile app configuration including viewport settings, apple-mobile-web-app-capable, and theme-color meta tags",
       "files": [
-        "frontend/src/pages/ScanPage.tsx"
+        "frontend/index.html"
       ],
       "components": [
         "authorization@4.0.0",
@@ -64,37 +63,41 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-39"
+        "REQ-57"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-quantitydeductionform-component-to-support-both-increasing-and-decreasing-fabric-quantity-replacing-the-current-deduction-only-interface-with-increment-decrement-controls-or-separate-increase-decrease-input-options",
-      "featureTitle": "Update the QuantityDeductionForm component to support both increasing and decreasing fabric quantity, replacing the current deduction-only interface with increment/decrement controls or separate increase/decrease input options",
+      "featureId": "feature-add-an-install-prompt-component-frontend-src-components-installprompt-tsx-that-detects-when-the-app-can-be-installed-to-the-home-screen-and-displays-a-banner-or-button-prompting-users-to-add-to-home-screen-with-appropriate-messaging-for-android-and-ios-devices",
+      "featureTitle": "Add an install prompt component (frontend/src/components/InstallPrompt.tsx) that detects when the app can be installed to the home screen and displays a banner or button prompting users to 'Add to Home Screen' with appropriate messaging for Android and iOS devices",
       "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/InstallPrompt.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "qr-code@1.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-59"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-optimize-the-application-for-mobile-touch-interactions-by-ensuring-all-interactive-elements-have-adequate-touch-target-sizes-minimum-44x44-pixels-implementing-touch-friendly-gestures-for-barcode-scanning-and-improving-form-input-experiences-on-mobile-keyboards",
+      "featureTitle": "Optimize the application for mobile touch interactions by ensuring all interactive elements have adequate touch target sizes (minimum 44x44 pixels), implementing touch-friendly gestures for barcode scanning, and improving form input experiences on mobile keyboards",
+      "files": [
+        "frontend/src/components/BarcodeScannerView.tsx",
+        "frontend/src/components/Layout.tsx",
         "frontend/src/components/QuantityDeductionForm.tsx",
-        "frontend/src/hooks/useQueries.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "qr-code@1.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "camera@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-40"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-scanpage-component-to-implement-automatic-fabric-selection-logic-when-a-barcode-is-scanned-search-the-inventory-for-a-fabric-whose-name-or-rack-id-matches-the-scanned-code-and-if-found-automatically-populate-the-quantitydeductionform-with-that-fabric-s-details",
-      "featureTitle": "Update the ScanPage component to implement automatic fabric selection logic: when a barcode is scanned, search the inventory for a fabric whose name or rack ID matches the scanned code, and if found, automatically populate the QuantityDeductionForm with that fabric's details",
-      "files": [
+        "frontend/src/pages/AddFabricPage.tsx",
         "frontend/src/pages/ScanPage.tsx"
       ],
       "components": [
@@ -109,7 +112,7 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-42"
+        "REQ-60"
       ],
       "confidence": "high"
     }

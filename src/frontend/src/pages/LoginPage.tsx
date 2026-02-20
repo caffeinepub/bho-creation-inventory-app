@@ -1,11 +1,40 @@
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Package, Scan, BarChart3, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { useLoginWithCredentials } from '../hooks/useQueries';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function LoginPage() {
   const { login, loginStatus } = useInternetIdentity();
+  const navigate = useNavigate();
+  const loginWithCredentials = useLoginWithCredentials();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [credentialError, setCredentialError] = useState('');
 
   const isLoggingIn = loginStatus === 'logging-in';
+  const isCredentialLoading = loginWithCredentials.isPending;
+
+  const handleCredentialLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCredentialError('');
+
+    if (!username.trim() || !password.trim()) {
+      setCredentialError('Please enter both username and password');
+      return;
+    }
+
+    try {
+      await loginWithCredentials.mutateAsync({ username, password });
+      navigate({ to: '/' });
+    } catch (error: any) {
+      setCredentialError(error.message || 'Login failed. Please try again.');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -96,15 +125,51 @@ export default function LoginPage() {
                         </p>
                       </div>
 
-                      {/* Login Button */}
-                      <div className="space-y-4">
+                      {/* Username/Password Login Form */}
+                      <form onSubmit={handleCredentialLogin} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="username" className="text-sm font-medium text-foreground">
+                            Username
+                          </Label>
+                          <Input
+                            id="username"
+                            type="text"
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            disabled={isCredentialLoading}
+                            className="h-12 rounded-xl border-border/50 focus:border-primary"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="password" className="text-sm font-medium text-foreground">
+                            Password
+                          </Label>
+                          <Input
+                            id="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            disabled={isCredentialLoading}
+                            className="h-12 rounded-xl border-border/50 focus:border-primary"
+                          />
+                        </div>
+
+                        {credentialError && (
+                          <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-xl p-3">
+                            {credentialError}
+                          </div>
+                        )}
+
                         <Button
-                          onClick={login}
-                          disabled={isLoggingIn}
-                          className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl group relative overflow-hidden"
+                          type="submit"
+                          disabled={isCredentialLoading}
+                          className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl group relative overflow-hidden"
                         >
                           <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
-                          {isLoggingIn ? (
+                          {isCredentialLoading ? (
                             <span className="flex items-center justify-center gap-2">
                               <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
                               Signing in...
@@ -116,13 +181,7 @@ export default function LoginPage() {
                             </span>
                           )}
                         </Button>
-
-                        {/* Security badge */}
-                        <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                          <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                          <span>Secured by Internet Identity</span>
-                        </div>
-                      </div>
+                      </form>
 
                       {/* Divider */}
                       <div className="relative">
@@ -131,8 +190,35 @@ export default function LoginPage() {
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
                           <span className="bg-card px-2 text-muted-foreground">
-                            Secure Authentication
+                            Or continue with
                           </span>
+                        </div>
+                      </div>
+
+                      {/* Internet Identity Login Button */}
+                      <div className="space-y-4">
+                        <Button
+                          onClick={login}
+                          disabled={isLoggingIn}
+                          variant="outline"
+                          className="w-full h-12 text-base font-semibold border-2 border-border/50 hover:border-primary/50 hover:bg-primary/5 rounded-xl transition-all duration-300"
+                        >
+                          {isLoggingIn ? (
+                            <span className="flex items-center justify-center gap-2">
+                              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                              Connecting...
+                            </span>
+                          ) : (
+                            <span className="flex items-center justify-center gap-2">
+                              Internet Identity
+                            </span>
+                          )}
+                        </Button>
+
+                        {/* Security badge */}
+                        <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                          <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                          <span>Secured by blockchain technology</span>
                         </div>
                       </div>
 

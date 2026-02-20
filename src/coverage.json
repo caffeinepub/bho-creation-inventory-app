@@ -1,104 +1,110 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T03:13:44.479Z",
+  "generatedAt": "2026-02-20T06:26:37.658Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 7,
+    "total": 6,
     "implemented": 5,
     "items": [
       {
-        "id": "REQ-36",
-        "summary": "Add an edit button to each fabric entry in the inventory list (InventoryList component) that opens an edit modal allowing users to modify all fabric details including fabric name, rack ID, quantity, purchase date, fabric photo, and bill photo",
+        "id": "REQ-55",
+        "summary": "Create a Web App Manifest file (frontend/public/manifest.json) that defines the app name as 'Bho Creation Inventory', sets the app as standalone display mode, configures app icons for various sizes (192x192, 512x512), and specifies the start URL and theme colors matching the current amber/orange color scheme",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/FabricEditModal.tsx",
-          "frontend/src/components/InventoryList.tsx"
+          "frontend/public/manifest.json"
         ],
         "matchedFiles": [
-          "frontend/src/components/FabricEditModal.tsx",
-          "frontend/src/components/InventoryList.tsx"
+          "frontend/public/manifest.json"
         ]
       },
       {
-        "id": "REQ-37",
-        "summary": "Create a backend function updateFabricEntry in main.mo that accepts a fabric ID and updated fabric data (name, rackId, quantity, purchaseDate, fabricPhoto blob, billPhoto blob) and updates the existing fabric entry while preserving audit trail",
-        "status": "unknown",
-        "plannedFiles": [],
+        "id": "REQ-56",
+        "summary": "Register a Service Worker (frontend/public/sw.js) that implements offline caching strategy for static assets (HTML, CSS, JS, images) and enables the app to function when internet connection is temporarily unavailable",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/sw.js"
+        ],
+        "matchedFiles": [
+          "frontend/public/sw.js"
+        ]
+      },
+      {
+        "id": "REQ-57",
+        "summary": "Update frontend/index.html to include the web app manifest link reference and add meta tags for mobile app configuration including viewport settings, apple-mobile-web-app-capable, and theme-color meta tags",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/index.html"
+        ],
+        "matchedFiles": [
+          "frontend/index.html"
+        ]
+      },
+      {
+        "id": "REQ-58",
+        "summary": "Update frontend/src/main.tsx to register the service worker on application load, handling service worker lifecycle events (install, activate, update) and providing user notifications when new app versions are available",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/main.tsx"
+        ],
         "matchedFiles": []
       },
       {
-        "id": "REQ-38",
-        "summary": "Create a React Query mutation hook useUpdateFabricEntry in useQueries.ts that calls the backend updateFabricEntry function and invalidates the inventory queries on success",
+        "id": "REQ-59",
+        "summary": "Add an install prompt component (frontend/src/components/InstallPrompt.tsx) that detects when the app can be installed to the home screen and displays a banner or button prompting users to 'Add to Home Screen' with appropriate messaging for Android and iOS devices",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/InstallPrompt.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/InstallPrompt.tsx",
+          "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-39",
-        "summary": "Update the barcode scanning functionality so that when a barcode is scanned, the system automatically selects the fabric entry whose name or rack ID matches the scanned code, and displays only quantity increase/decrease controls (not full edit options)",
+        "id": "REQ-60",
+        "summary": "Optimize the application for mobile touch interactions by ensuring all interactive elements have adequate touch target sizes (minimum 44x44 pixels), implementing touch-friendly gestures for barcode scanning, and improving form input experiences on mobile keyboards",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/ScanPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/ScanPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-40",
-        "summary": "Update the QuantityDeductionForm component to support both increasing and decreasing fabric quantity, replacing the current deduction-only interface with increment/decrement controls or separate increase/decrease input options",
-        "status": "implemented",
-        "plannedFiles": [
+          "frontend/index.css",
+          "frontend/src/components/BarcodeScannerView.tsx",
+          "frontend/src/pages/AddFabricPage.tsx",
+          "frontend/src/pages/ScanPage.tsx",
           "frontend/src/components/QuantityDeductionForm.tsx",
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/Layout.tsx"
         ],
         "matchedFiles": [
+          "frontend/src/components/BarcodeScannerView.tsx",
+          "frontend/src/pages/AddFabricPage.tsx",
+          "frontend/src/pages/ScanPage.tsx",
           "frontend/src/components/QuantityDeductionForm.tsx",
-          "frontend/src/hooks/useQueries.ts"
-        ]
-      },
-      {
-        "id": "REQ-41",
-        "summary": "Update the backend deductQuantity function or create a new adjustQuantity function in main.mo that accepts both positive (increase) and negative (decrease) quantity adjustments for a fabric entry identified by rack ID",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-42",
-        "summary": "Update the ScanPage component to implement automatic fabric selection logic: when a barcode is scanned, search the inventory for a fabric whose name or rack ID matches the scanned code, and if found, automatically populate the QuantityDeductionForm with that fabric's details",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/ScanPage.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/ScanPage.tsx"
+          "frontend/src/components/Layout.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/FabricEditModal.tsx",
-    "frontend/src/components/InventoryList.tsx",
+    "frontend/index.html",
+    "frontend/public/assets/generated/app-icon-192.dim_192x192.png",
+    "frontend/public/assets/generated/app-icon-512.dim_512x512.png",
+    "frontend/public/assets/generated/apple-touch-icon.dim_180x180.png",
+    "frontend/public/manifest.json",
+    "frontend/public/sw.js",
+    "frontend/src/App.tsx",
+    "frontend/src/components/BarcodeScannerView.tsx",
+    "frontend/src/components/InstallPrompt.tsx",
+    "frontend/src/components/Layout.tsx",
     "frontend/src/components/QuantityDeductionForm.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
-    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/AddFabricPage.tsx",
     "frontend/src/pages/ScanPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",

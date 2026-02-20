@@ -1,104 +1,138 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add fabric edit functionality and enhanced barcode scanning with auto-selection",
+  "title": "Convert Bho Creation Inventory to Progressive Web App (PWA)",
   "requirements": [
     {
-      "id": "REQ-36",
-      "summary": "Add edit button and modal to InventoryList for modifying fabric details",
+      "id": "REQ-55",
+      "summary": "Create Web App Manifest file with app identity, standalone mode, and app icons",
       "acceptanceCriteria": [
-        "Each fabric row in the inventory list displays an edit button",
-        "Clicking the edit button opens a modal with a form pre-filled with current fabric data",
-        "The edit form includes inputs for fabric name, rack ID, quantity, purchase date, fabric photo upload, and bill photo upload",
-        "Users can update any combination of fields and save changes",
-        "Changes are persisted to the backend and reflected immediately in the inventory list"
+        "Manifest file exists at frontend/public/manifest.json with valid JSON structure",
+        "App name is set to 'Bho Creation Inventory'",
+        "Display mode is set to 'standalone' for app-like experience",
+        "Theme color matches the existing amber/orange color palette from index.css",
+        "Start URL is configured to launch the main application"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/FabricEditModal.tsx",
+          "path": "frontend/public/manifest.json",
           "operation": "create",
-          "description": "Create a modal component for editing fabric entries. Include form fields for fabricName (text input), rackId (text input), quantity (number input), purchaseDate (date picker), fabricPhoto (file upload with preview using ExternalBlob), and billPhoto (file upload with preview using ExternalBlob). Pre-populate all fields with current fabric data passed as props. Use the blob-storage component's ExternalBlob class for handling photo uploads with upload progress tracking. Include save and cancel buttons. On save, call the useUpdateFabricEntry mutation hook. Display loading state during save. Use shadcn/ui Dialog, Input, Button, and Label components for consistent styling."
+          "description": "Create a Web App Manifest JSON file that defines the app name as 'Bho Creation Inventory', sets display mode to 'standalone', configures start_url to '/', and specifies theme_color and background_color using the amber/orange color scheme from index.css (hsl(20.5 90.2% 48.2%)). Include icons array with entries for the generated app icons at frontend/public/assets/generated/app-icon-192.dim_192x192.png (sizes: '192x192', type: 'image/png') and frontend/public/assets/generated/app-icon-512.dim_512x512.png (sizes: '512x512', type: 'image/png', purpose: 'any maskable'). Set short_name to 'Bho Inventory' and scope to '/'."
+        }
+      ]
+    },
+    {
+      "id": "REQ-56",
+      "summary": "Implement Service Worker with offline caching strategy for static assets",
+      "acceptanceCriteria": [
+        "Service worker file exists at frontend/public/sw.js",
+        "Service worker caches all critical static assets on installation",
+        "App shell loads from cache when offline",
+        "Service worker updates automatically when new version is deployed"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/public/sw.js",
+          "operation": "create",
+          "description": "Create a Service Worker JavaScript file that implements a cache-first strategy for static assets. Define a CACHE_NAME constant with version (e.g., 'bho-inventory-v1'). In the 'install' event listener, use event.waitUntil() to cache critical assets including '/', '/index.html', '/index.css', '/src/main.tsx', and the generated app icon images at frontend/public/assets/generated/app-icon-192.dim_192x192.png and frontend/public/assets/generated/app-icon-512.dim_512x512.png using caches.open() and cache.addAll(). In the 'activate' event listener, implement cache cleanup by deleting old cache versions. In the 'fetch' event listener, respond with cached assets using caches.match(), falling back to network fetch for uncached resources, and cache successful network responses for future offline access. Handle errors gracefully to ensure the app continues to function."
+        }
+      ]
+    },
+    {
+      "id": "REQ-57",
+      "summary": "Add PWA meta tags and manifest link to HTML entry point",
+      "acceptanceCriteria": [
+        "Manifest link tag is present in index.html head section",
+        "Meta tag for theme-color is configured with amber color",
+        "Meta tag for apple-mobile-web-app-capable is set to 'yes'",
+        "Meta tag for apple-mobile-web-app-status-bar-style is configured"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Add PWA-specific meta tags and manifest link to the <head> section. Insert <link rel=\"manifest\" href=\"/manifest.json\"> to reference the web app manifest. Add <meta name=\"theme-color\" content=\"hsl(20.5 90.2% 48.2%)\"> to match the amber primary color from index.css. Add <meta name=\"apple-mobile-web-app-capable\" content=\"yes\"> to enable full-screen mode on iOS. Add <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"> for iOS status bar styling. Add <link rel=\"apple-touch-icon\" href=\"/assets/generated/apple-touch-icon.dim_180x180.png\"> to specify the iOS home screen icon using the generated image at frontend/public/assets/generated/apple-touch-icon.dim_180x180.png. Ensure existing viewport and charset meta tags remain unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-58",
+      "summary": "Register Service Worker in main.tsx with lifecycle handling and update notifications",
+      "acceptanceCriteria": [
+        "Service worker registration code is added to main.tsx",
+        "Registration only occurs in production builds (not development)",
+        "User receives notification when app update is available",
+        "Service worker errors are logged for debugging"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/main.tsx",
+          "operation": "modify",
+          "description": "Add Service Worker registration logic after the ReactDOM.createRoot() call. Check if 'serviceWorker' is supported in navigator and if the environment is production (import.meta.env.PROD). If both conditions are true, register the service worker using navigator.serviceWorker.register('/sw.js'). Handle the registration promise: on success, listen for the 'updatefound' event on registration, and when a new service worker is installing, listen for its 'statechange' event. When the new worker's state becomes 'installed' and there's an existing active service worker, display a user-friendly notification (using a toast or alert) informing the user that a new version is available and prompting them to reload the page. On registration error, log the error to console with a descriptive message. Ensure this registration code runs only once during application initialization and does not interfere with existing InternetIdentityProvider or QueryClientProvider setup."
+        }
+      ]
+    },
+    {
+      "id": "REQ-59",
+      "summary": "Create InstallPrompt component for Add to Home Screen functionality",
+      "acceptanceCriteria": [
+        "Install prompt component detects beforeinstallprompt event on Android",
+        "Component displays appropriate install instructions for iOS users",
+        "User can dismiss the install prompt",
+        "Install prompt respects user's previous dismissal decision"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/InstallPrompt.tsx",
+          "operation": "create",
+          "description": "Create a React component that detects PWA installation capability and displays an appropriate install prompt. Use useState to track the deferredPrompt event, visibility state, and user dismissal preference (check localStorage for 'pwa-install-dismissed' key). Use useEffect to listen for the 'beforeinstallprompt' event on Android devices, prevent default behavior, and store the event in state. Detect iOS devices using navigator.userAgent regex. Render a dismissible banner or card component (using shadcn/ui Card, Alert, or Dialog) positioned fixed at the bottom of the screen. For Android, display a primary action button 'Add to Home Screen' that calls deferredPrompt.prompt(), awaits the user's choice, and hides the prompt afterward. For iOS, display instructional text explaining how to manually add the app to the home screen using the Share button and 'Add to Home Screen' option. Include a close/dismiss button that sets the dismissal flag in localStorage and hides the component. Style the prompt using Tailwind CSS classes to match the existing amber/orange theme from index.css. Ensure the component does not show if already dismissed or if the app is already installed (check matchMedia('(display-mode: standalone)'))."
         },
         {
-          "path": "frontend/src/components/InventoryList.tsx",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add an edit button (using shadcn/ui Button with pencil icon) to each fabric row in the table. Add state for managing which fabric is being edited and whether the FabricEditModal is open. Wire the edit button click to open the FabricEditModal with the selected fabric's data. Import and render the FabricEditModal component with appropriate props (fabric data, onClose callback, open state). Ensure the modal closes after successful edit and the inventory list updates automatically via React Query cache invalidation."
+          "description": "Import and render the InstallPrompt component within the main application layout after authentication is established. Position the InstallPrompt component inside the RouterProvider context, after the profile setup modal but outside any specific route components, so it appears across all pages. Ensure the component is conditionally rendered only when the user is authenticated (isAuthenticated is true), maintaining the existing authentication flow and modal logic for Internet Identity users without modification."
         }
       ]
     },
     {
-      "id": "REQ-38",
-      "summary": "Create React Query mutation hook for updating fabric entries",
+      "id": "REQ-60",
+      "summary": "Optimize touch interactions and mobile keyboard experiences",
       "acceptanceCriteria": [
-        "Hook accepts fabric ID and updated fabric data as parameters",
-        "Hook calls the backend updateFabricEntry function via the actor",
-        "Hook invalidates fabric inventory queries on successful update",
-        "Hook handles loading and error states appropriately"
+        "All buttons and clickable elements meet minimum 44x44px touch target size",
+        "Form inputs trigger appropriate mobile keyboard types (numeric for quantity, email for email fields)",
+        "Barcode scanner interface is optimized for mobile touch controls",
+        "Mobile navigation gestures work smoothly without conflicts"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/index.css",
           "operation": "modify",
-          "description": "Add a new mutation hook useUpdateFabricEntry that accepts rackId and UpdateFabricData (matching the backend interface type with fabricName, rackId, quantity, purchaseDate optional bigint, fabricPhoto optional ExternalBlob, billPhoto optional ExternalBlob). Use useMutation from React Query to call actor.updateFabricEntry(rackId, updatedData). On success, invalidate the 'inventoryList' query key to refresh the inventory display. Return mutation state including mutate function, isLoading, error, and isSuccess. Handle errors with appropriate error messages. Ensure the hook follows the same pattern as existing mutation hooks in the file."
-        }
-      ]
-    },
-    {
-      "id": "REQ-39",
-      "summary": "Implement automatic fabric selection when barcode matches fabric name or rack ID",
-      "acceptanceCriteria": [
-        "After scanning a barcode, the system searches for a fabric entry where the fabric name or rack ID matches the scanned code",
-        "If a matching fabric is found, it is automatically selected and displayed",
-        "The quantity deduction form shows the selected fabric details with options to increase or decrease quantity only",
-        "Users cannot edit other fabric fields (name, photos, purchase date) through the barcode scan interface",
-        "If no matching fabric is found, display an appropriate message"
-      ],
-      "file_operations": [
+          "description": "Add global CSS utility classes for mobile touch optimization. Define a .touch-target class that ensures minimum 44x44px dimensions using min-width, min-height, and appropriate padding. Add a .mobile-input class that applies comfortable padding and font-size of at least 16px to prevent iOS zoom on input focus. Create responsive tap highlight color using -webkit-tap-highlight-color with a semi-transparent amber color matching the theme. Add touch-action CSS property utilities to prevent unintended gestures. Ensure all interactive elements inherit proper cursor: pointer and have adequate spacing. Apply these optimizations globally to buttons, links, and form controls using Tailwind's @apply or direct CSS rules targeting button, a, input, select, and textarea selectors."
+        },
+        {
+          "path": "frontend/src/components/BarcodeScannerView.tsx",
+          "operation": "modify",
+          "description": "Enhance the barcode scanner interface for mobile touch interactions. Ensure all camera control buttons (Start Scanning, Stop Scanning, Switch Camera) have explicit className properties that apply minimum 44x44px dimensions using Tailwind CSS (e.g., min-h-[44px] min-w-[44px] py-3 px-6). Increase the spacing between buttons to prevent accidental taps (use gap-4 or space-x-4 on the button container). Verify the camera preview video element has explicit dimensions with a stable aspect ratio to prevent layout collapse on mobile devices (e.g., aspect-video or explicit height like h-64 md:h-96). Ensure the video preview container has width: 100% and a min-height to maintain visibility. Add touch-friendly padding around interactive elements. Review and ensure existing mobile device detection logic properly displays the Switch Camera button only on mobile devices as specified in the camera component usage instructions. Test that disabled states are visually distinct and prevent interaction."
+        },
+        {
+          "path": "frontend/src/pages/AddFabricPage.tsx",
+          "operation": "modify",
+          "description": "Optimize form inputs for mobile keyboard experiences by adding appropriate inputMode and type attributes. For the quantity input field, add inputMode=\"numeric\" and type=\"number\" to trigger the numeric keyboard on mobile devices. For the rack ID field, use inputMode=\"text\" with type=\"text\". For the purchase date field, ensure type=\"date\" is used to leverage native mobile date pickers. Add min-h-[44px] Tailwind class to all input fields, buttons, and select dropdowns to meet touch target size requirements. Increase spacing between form fields using gap-4 or gap-6 on the form container. Ensure submit and cancel buttons have adequate padding (py-3 px-6) and meet minimum 44x44px dimensions. Add proper labels with htmlFor attributes to improve mobile accessibility and increase the tappable area. Review photo upload buttons and ensure they have clear visual affordances with sufficient size for touch interaction."
+        },
         {
           "path": "frontend/src/pages/ScanPage.tsx",
           "operation": "modify",
-          "description": "Update the ScanPage component to implement automatic fabric selection logic. When a barcode is scanned (via onRackSelected callback from BarcodeScannerView), fetch the full inventory list using the useGetInventory hook. Search the inventory for a fabric where either fabricName or rackId matches the scanned code (case-insensitive comparison using toLowerCase()). If a match is found, automatically populate the selectedRackId state with the matching rackId to trigger the QuantityDeductionForm. If multiple matches exist, select the first one. If no match is found, display a toast or alert message indicating 'No fabric found for scanned code: [code]'. Ensure the matching logic runs each time a new barcode is scanned."
-        }
-      ]
-    },
-    {
-      "id": "REQ-40",
-      "summary": "Update QuantityDeductionForm to support both increasing and decreasing quantity",
-      "acceptanceCriteria": [
-        "The form displays the current quantity of the selected fabric",
-        "Users can choose to either increase or decrease the quantity",
-        "The interface provides clear controls for both operations (e.g., +/- buttons or radio selection with amount input)",
-        "Validation ensures quantity cannot be decreased below zero",
-        "The updated quantity is saved to the backend and reflected in the inventory immediately"
-      ],
-      "file_operations": [
+          "description": "Optimize the quantity deduction form and related controls for mobile touch interactions. Ensure the QuantityDeductionForm component's parent container and all interactive elements within the page meet the 44x44px touch target size requirement. Add Tailwind classes (min-h-[44px] min-w-[44px]) to any buttons or controls that trigger actions. Increase spacing between interactive elements to prevent accidental taps. Ensure the barcode scanner component renders with proper mobile optimization as updated in REQ-60's BarcodeScannerView changes. Review and adjust layout to be responsive and touch-friendly across different mobile screen sizes. Verify that navigation and form submission flows work smoothly on touch devices without conflicts or gesture interception issues."
+        },
         {
           "path": "frontend/src/components/QuantityDeductionForm.tsx",
           "operation": "modify",
-          "description": "Replace the current deduction-only interface with increment/decrement controls. Add radio buttons or tabs for selecting 'Increase' or 'Decrease' operation mode. Update the form to accept a quantity adjustment value (positive or negative). Display the current fabric quantity prominently. Add validation to ensure that if 'Decrease' is selected, the resulting quantity (current - amount) is not negative. Update the form submission to call the new useAdjustQuantity mutation hook (passing rackId and signed quantity change: positive for increase, negative for decrease). Update button labels to reflect the selected operation (e.g., 'Increase Quantity' or 'Decrease Quantity'). Show clear success/error messages after the operation completes. Use shadcn/ui RadioGroup or Tabs components for the operation selector."
+          "description": "Enhance mobile touch interaction and keyboard experience for the quantity adjustment form. Add inputMode=\"numeric\" and type=\"number\" to the quantity input field to trigger the numeric keyboard on mobile devices. Apply min-h-[44px] Tailwind class to the input field and all buttons (increase, decrease, submit) to meet touch target size requirements. Increase button padding to py-3 px-6 for better touch affordance. Add spacing between the increase and decrease buttons (gap-3 or gap-4) to prevent accidental taps. Ensure the form container has appropriate spacing (gap-4 or gap-6) between form elements. Verify that stock status indicators and visual feedback elements do not interfere with touch interactions. Ensure disabled button states are clearly visible and prevent touch interaction on low-stock or out-of-stock items as per existing validation logic."
         },
         {
-          "path": "frontend/src/hooks/useQueries.ts",
+          "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Add a new mutation hook useAdjustQuantity that accepts rackId (string) and quantityChange (number, positive for increase, negative for decrease). Use useMutation from React Query to call actor.adjustQuantity(rackId, quantityChange). On success, invalidate the 'inventoryList' query key to refresh the inventory display. Return mutation state including mutate function, isLoading, error, and isSuccess. Handle errors with appropriate error messages. This hook replaces or extends the existing quantity update functionality to support bidirectional adjustments."
-        }
-      ]
-    },
-    {
-      "id": "REQ-42",
-      "summary": "Implement automatic fabric selection in ScanPage based on barcode matching",
-      "acceptanceCriteria": [
-        "After a successful barcode scan, the system queries the inventory list for matching fabrics",
-        "The match is case-insensitive and checks both fabric name and rack ID fields",
-        "If a match is found, the fabric is automatically selected and its details are passed to the QuantityDeductionForm",
-        "If multiple matches are found, the first match is selected",
-        "If no match is found, display a user-friendly message indicating no fabric was found for that barcode"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/ScanPage.tsx",
-          "operation": "modify",
-          "description": "Implement the automatic fabric selection logic in the ScanPage component's barcode scan handler. Use the useGetInventory hook to access the full inventory list. When onRackSelected is called from BarcodeScannerView, perform a case-insensitive search through the inventory entries to find a fabric where either entry.fabricName.toLowerCase() === scannedCode.toLowerCase() or entry.rackId.toLowerCase() === scannedCode.toLowerCase(). If a match is found, set the selectedRackId state to the matching fabric's rackId, which will automatically populate the QuantityDeductionForm with that fabric's details. If no match is found, display a user-friendly error message using a toast notification or alert component. If multiple matches exist, select the first matching entry. Ensure the search runs efficiently and handles edge cases like empty inventory or malformed barcodes."
+          "description": "Optimize navigation menu and header for mobile touch interactions. Ensure all navigation links and buttons in the header have minimum 44x44px touch target sizes by applying Tailwind classes (min-h-[44px] py-3 px-4). Increase spacing between navigation menu items (gap-4 or gap-6) to prevent accidental taps, especially in the mobile navigation menu. Verify the mobile menu toggle button (if present) meets touch target requirements. Ensure the logo and user profile display areas are responsive and do not interfere with navigation touch targets. Review responsive breakpoints to ensure the mobile navigation provides adequate spacing and tap targets on small screens. Apply consistent padding and touch-friendly styling across all interactive elements in the layout component to ensure smooth mobile navigation gestures without conflicts."
         }
       ]
     }

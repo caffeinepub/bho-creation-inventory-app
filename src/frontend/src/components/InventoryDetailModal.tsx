@@ -9,13 +9,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, FileText, Image as ImageIcon, Package } from 'lucide-react';
-import type { FabricInventoryEntry } from '../backend';
+import { Calendar, FileText, Image as ImageIcon, Package, Tag } from 'lucide-react';
+import type { FabricEntry } from '../backend';
 import ImageLightbox from './ImageLightbox';
 
 interface InventoryDetailModalProps {
   rackId: string;
-  entry: FabricInventoryEntry;
+  entry: FabricEntry;
   onClose: () => void;
 }
 
@@ -40,19 +40,19 @@ export default function InventoryDetailModal({ rackId, entry, onClose }: Invento
       <Dialog open={true} onOpenChange={onClose}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Fabric Entry Details</DialogTitle>
+            <DialogTitle className="text-2xl">Inventory Item Details</DialogTitle>
             <DialogDescription>
-              Complete information for this fabric inventory entry
+              Complete information for this inventory entry
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 mt-4">
-            {/* Fabric Photo */}
+            {/* Item Photo */}
             {entry.fabricPhoto && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                   <ImageIcon className="w-4 h-4" />
-                  Fabric Photo
+                  Item Photo
                 </div>
                 <button
                   onClick={() => setLightboxImage(entry.fabricPhoto!.getDirectURL())}
@@ -72,8 +72,18 @@ export default function InventoryDetailModal({ rackId, entry, onClose }: Invento
             {/* Basic Information */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
+                <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  Item Type
+                </div>
+                <Badge variant="outline" className="font-medium text-base">
+                  {entry.itemType}
+                </Badge>
+              </div>
+
+              <div className="space-y-1">
                 <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                  Fabric Name
+                  Item Name
                 </div>
                 <div className="text-lg font-medium">{entry.fabricName}</div>
               </div>
@@ -83,16 +93,8 @@ export default function InventoryDetailModal({ rackId, entry, onClose }: Invento
                   Rack ID
                 </div>
                 <code className="inline-block px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 rounded text-base">
-                  {entry.rackId}
+                  {rackId}
                 </code>
-              </div>
-
-              <div className="space-y-1">
-                <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
-                  <Package className="w-4 h-4" />
-                  Quantity
-                </div>
-                <div className="text-lg font-semibold">{entry.quantity.toFixed(2)} meters</div>
               </div>
 
               <div className="space-y-1">
@@ -107,6 +109,16 @@ export default function InventoryDetailModal({ rackId, entry, onClose }: Invento
                   ) : (
                     <Badge className="bg-green-600 hover:bg-green-700 text-white">In Stock</Badge>
                   )}
+                </div>
+              </div>
+
+              <div className="space-y-1 col-span-2">
+                <div className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+                  <Package className="w-4 h-4" />
+                  Quantity
+                </div>
+                <div className="text-lg font-semibold">
+                  {entry.quantity.toFixed(2)} {entry.unit}
                 </div>
               </div>
             </div>

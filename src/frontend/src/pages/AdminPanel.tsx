@@ -22,8 +22,12 @@ export default function AdminPanel() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newUserName, setNewUserName] = useState('');
   const [newUserUsername, setNewUserUsername] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
   const [newUserPrincipal, setNewUserPrincipal] = useState('');
   const [newUserRole, setNewUserRole] = useState<string>('worker');
+
+  const [promotionPassword, setPromotionPassword] = useState('');
+  const [showPromotionPasswordInput, setShowPromotionPasswordInput] = useState(false);
 
   const [editingUser, setEditingUser] = useState<{ principal: Principal; name: string; username: string; role: UserRole } | null>(null);
 
@@ -36,12 +40,25 @@ export default function AdminPanel() {
       return;
     }
 
+    if (!showPromotionPasswordInput) {
+      setShowPromotionPasswordInput(true);
+      return;
+    }
+
+    if (!promotionPassword.trim() || promotionPassword.length < 8) {
+      toast.error('Password must be at least 8 characters');
+      return;
+    }
+
     try {
       const result = await promoteToMasterAdminMutation.mutateAsync({
         username: currentUserProfile.username,
         name: currentUserProfile.name,
+        password: promotionPassword,
       });
       toast.success('Successfully promoted to Master Admin!');
+      setPromotionPassword('');
+      setShowPromotionPasswordInput(false);
     } catch (error: any) {
       toast.error(error.message || 'Failed to promote to Master Admin');
     }
@@ -50,8 +67,13 @@ export default function AdminPanel() {
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!newUserName.trim() || !newUserUsername.trim() || !newUserPrincipal.trim()) {
+    if (!newUserName.trim() || !newUserUsername.trim() || !newUserPrincipal.trim() || !newUserPassword.trim()) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (newUserPassword.length < 8) {
+      toast.error('Password must be at least 8 characters');
       return;
     }
 
@@ -76,11 +98,13 @@ export default function AdminPanel() {
         userPrincipal: principal,
         name: newUserName.trim(),
         username: newUserUsername.trim(),
+        password: newUserPassword.trim(),
         role: newUserRole,
       });
       toast.success('User created successfully');
       setNewUserName('');
       setNewUserUsername('');
+      setNewUserPassword('');
       setNewUserPrincipal('');
       setNewUserRole('worker');
       setShowCreateForm(false);
@@ -148,23 +172,55 @@ export default function AdminPanel() {
             <p className="text-sm text-neutral-700 dark:text-neutral-300 mb-4">
               This appears to be the first time accessing the admin panel. Click the button below to promote yourself to Master Admin and gain full access to all administrative features.
             </p>
-            <Button
-              onClick={handlePromoteToMasterAdmin}
-              disabled={promoteToMasterAdminMutation.isPending}
-              className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
-            >
-              {promoteToMasterAdminMutation.isPending ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Promoting...
-                </>
-              ) : (
-                <>
-                  <Crown className="w-4 h-4 mr-2" />
-                  Promote to Master Admin
-                </>
+            
+            {showPromotionPasswordInput && (
+              <div className="space-y-2 mb-4">
+                <Label htmlFor="promotionPassword">Set Your Password</Label>
+                <Input
+                  id="promotionPassword"
+                  type="password"
+                  value={promotionPassword}
+                  onChange={(e) => setPromotionPassword(e.target.value)}
+                  placeholder="Enter password (min 8 characters)"
+                  minLength={8}
+                  className="max-w-md"
+                />
+                <p className="text-xs text-muted-foreground">
+                  This password will be used for credential-based login
+                </p>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <Button
+                onClick={handlePromoteToMasterAdmin}
+                disabled={promoteToMasterAdminMutation.isPending}
+                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
+              >
+                {promoteToMasterAdminMutation.isPending ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Promoting...
+                  </>
+                ) : (
+                  <>
+                    <Crown className="w-4 h-4 mr-2" />
+                    {showPromotionPasswordInput ? 'Confirm Promotion' : 'Promote to Master Admin'}
+                  </>
+                )}
+              </Button>
+              {showPromotionPasswordInput && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowPromotionPasswordInput(false);
+                    setPromotionPassword('');
+                  }}
+                >
+                  Cancel
+                </Button>
               )}
-            </Button>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -221,6 +277,21 @@ export default function AdminPanel() {
                     required
                   />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={newUserPassword}
+                  onChange={(e) => setNewUserPassword(e.target.value)}
+                  placeholder="Enter password (min 8 characters)"
+                  minLength={8}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  This password will be used for credential-based login
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="principal">Principal ID</Label>

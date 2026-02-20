@@ -14,13 +14,14 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
-export interface FabricInventoryEntry {
+export interface FabricEntry {
     fabricName: string;
     purchaseDate?: bigint;
     billPhoto?: ExternalBlob;
+    unit: string;
     fabricPhoto?: ExternalBlob;
+    itemType: string;
     quantity: number;
-    rackId: string;
 }
 export interface AuditLogEntry {
     action: string;
@@ -30,6 +31,13 @@ export interface AuditLogEntry {
     quantity: number;
     rackId: string;
 }
+export type LoginResult = {
+    __kind__: "error";
+    error: string;
+} | {
+    __kind__: "success";
+    success: UserProfile;
+};
 export interface UserProfile {
     username: string;
     name: string;
@@ -39,9 +47,10 @@ export interface UpdateFabricData {
     fabricName: string;
     purchaseDate?: bigint;
     billPhoto?: ExternalBlob;
+    unit: string;
     fabricPhoto?: ExternalBlob;
+    itemType: string;
     quantity: number;
-    rackId: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -49,27 +58,31 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addFabricEntry(rackId: string, fabric: {
+    addFabricEntry(rackId: string, entryData: {
         fabricName: string;
         purchaseDate?: bigint;
         billPhoto?: ExternalBlob;
+        unit: string;
         fabricPhoto?: ExternalBlob;
+        itemType: string;
         quantity: number;
     }): Promise<string>;
     adjustQuantity(rackId: string, quantityChange: number): Promise<string>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     assignUserRole(userPrincipal: Principal, role: string): Promise<string>;
-    createUser(userPrincipal: Principal, name: string, username: string, role: string): Promise<string>;
-    getAllInventoryFabricEntries(): Promise<Array<[string, FabricInventoryEntry]>>;
+    createUser(userPrincipal: Principal, name: string, username: string, password: string, role: string): Promise<string>;
+    getAllInventoryFabricEntries(): Promise<Array<[string, FabricEntry]>>;
     getAllUsers(): Promise<Array<[Principal, UserProfile]>>;
     getAuditLog(): Promise<Array<AuditLogEntry>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
-    getInventory(): Promise<Array<[string, FabricInventoryEntry]>>;
+    getInventory(): Promise<Array<[string, FabricEntry]>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
+    loginWithCredentials(username: string, password: string): Promise<LoginResult>;
     promoteToMasterAdmin(masterAdminMetadata: {
         username: string;
+        password: string;
         name: string;
     }): Promise<string>;
     removeFabricEntry(rackId: string): Promise<string>;

@@ -10,13 +10,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import ImageLightbox from './ImageLightbox';
 import InventoryDetailModal from './InventoryDetailModal';
 import FabricEditModal from './FabricEditModal';
-import type { FabricInventoryEntry } from '../backend';
+import type { FabricEntry } from '../backend';
 
 export default function InventoryList() {
   const { data: inventory, isLoading, error } = useGetInventory();
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const [detailEntry, setDetailEntry] = useState<{ rackId: string; entry: FabricInventoryEntry } | null>(null);
-  const [editEntry, setEditEntry] = useState<{ rackId: string; entry: FabricInventoryEntry } | null>(null);
+  const [detailEntry, setDetailEntry] = useState<{ rackId: string; entry: FabricEntry } | null>(null);
+  const [editEntry, setEditEntry] = useState<{ rackId: string; entry: FabricEntry } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filter inventory based on search term
@@ -28,7 +28,8 @@ export default function InventoryList() {
     return inventory.filter(([rackId, entry]) => {
       const fabricNameMatch = entry.fabricName.toLowerCase().includes(lowerSearchTerm);
       const rackIdMatch = rackId.toLowerCase().includes(lowerSearchTerm);
-      return fabricNameMatch || rackIdMatch;
+      const itemTypeMatch = entry.itemType.toLowerCase().includes(lowerSearchTerm);
+      return fabricNameMatch || rackIdMatch || itemTypeMatch;
     });
   }, [inventory, searchTerm]);
 
@@ -65,10 +66,10 @@ export default function InventoryList() {
               <Package className="w-8 h-8 text-amber-600 dark:text-amber-500" />
             </div>
             <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
-              No Fabric Entries Yet
+              No Inventory Items Yet
             </h3>
             <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-              Start by adding your first fabric entry to the inventory
+              Start by adding your first item to the inventory
             </p>
           </div>
         </CardContent>
@@ -83,9 +84,9 @@ export default function InventoryList() {
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Fabric Inventory</CardTitle>
+          <CardTitle>Inventory</CardTitle>
           <CardDescription>
-            {inventory.length} {inventory.length === 1 ? 'entry' : 'entries'} in your inventory
+            {inventory.length} {inventory.length === 1 ? 'item' : 'items'} in your inventory
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -95,16 +96,15 @@ export default function InventoryList() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
               <Input
                 type="text"
-                placeholder="Search by fabric name or rack ID..."
+                placeholder="Search by name, rack ID, or item type..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-10 h-11 border-neutral-300 dark:border-neutral-600 focus:ring-amber-500 focus:border-amber-500"
+                className="pl-10 pr-10"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
-                  aria-label="Clear search"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -112,37 +112,37 @@ export default function InventoryList() {
             </div>
           </div>
 
-          {/* Results or Empty State */}
-          {!hasSearchResults && isSearching ? (
-            <div className="py-12 text-center">
-              <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-amber-600 dark:text-amber-500" />
+          {/* No Search Results */}
+          {isSearching && !hasSearchResults && (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-neutral-400" />
               </div>
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
                 No Results Found
               </h3>
               <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-                No fabrics match "{searchTerm}". Try a different search term.
+                Try adjusting your search terms
               </p>
-              <Button
-                variant="outline"
-                onClick={() => setSearchTerm('')}
-                className="border-amber-600 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-              >
+              <Button variant="outline" onClick={() => setSearchTerm('')}>
                 Clear Search
               </Button>
             </div>
-          ) : (
-            <div className="rounded-md border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+          )}
+
+          {/* Inventory Table */}
+          {hasSearchResults && (
+            <div className="rounded-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
-                    <TableHead className="font-semibold w-20">Photo</TableHead>
-                    <TableHead className="font-semibold">Fabric Name</TableHead>
-                    <TableHead className="font-semibold">Rack ID</TableHead>
-                    <TableHead className="font-semibold text-right">Quantity</TableHead>
-                    <TableHead className="font-semibold text-right">Status</TableHead>
-                    <TableHead className="font-semibold text-center">Actions</TableHead>
+                    <TableHead className="w-20">Photo</TableHead>
+                    <TableHead>Item Type</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Rack ID</TableHead>
+                    <TableHead>Quantity</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -156,7 +156,7 @@ export default function InventoryList() {
                           {entry.fabricPhoto ? (
                             <button
                               onClick={() => setLightboxImage(entry.fabricPhoto!.getDirectURL())}
-                              className="w-16 h-16 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700 hover:ring-2 hover:ring-amber-500 transition-all"
+                              className="w-12 h-12 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700 hover:ring-2 hover:ring-amber-500 transition-all"
                             >
                               <img
                                 src={entry.fabricPhoto.getDirectURL()}
@@ -165,21 +165,26 @@ export default function InventoryList() {
                               />
                             </button>
                           ) : (
-                            <div className="w-16 h-16 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center border border-neutral-200 dark:border-neutral-700">
-                              <ImageIcon className="w-6 h-6 text-neutral-400" />
+                            <div className="w-12 h-12 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center border border-neutral-200 dark:border-neutral-700">
+                              <ImageIcon className="w-5 h-5 text-neutral-400" />
                             </div>
                           )}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="font-medium">
+                            {entry.itemType}
+                          </Badge>
                         </TableCell>
                         <TableCell className="font-medium">{entry.fabricName}</TableCell>
                         <TableCell>
                           <code className="px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded text-sm">
-                            {entry.rackId}
+                            {rackId}
                           </code>
                         </TableCell>
-                        <TableCell className="text-right font-semibold">
-                          {entry.quantity.toFixed(2)} m
+                        <TableCell className="font-semibold">
+                          {entry.quantity.toFixed(2)} {entry.unit}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell>
                           {isOutOfStock ? (
                             <Badge variant="destructive">Out of Stock</Badge>
                           ) : isLowStock ? (
@@ -188,25 +193,23 @@ export default function InventoryList() {
                             <Badge className="bg-green-600 hover:bg-green-700 text-white">In Stock</Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-center">
-                          <div className="flex items-center justify-center gap-1">
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
                             <Button
                               variant="ghost"
-                              size="sm"
-                              onClick={() => setEditEntry({ rackId, entry })}
-                              className="hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                              size="icon"
+                              onClick={() => setDetailEntry({ rackId, entry })}
+                              title="View Details"
                             >
-                              <Pencil className="w-4 h-4 mr-1" />
-                              Edit
+                              <Eye className="w-4 h-4" />
                             </Button>
                             <Button
                               variant="ghost"
-                              size="sm"
-                              onClick={() => setDetailEntry({ rackId, entry })}
-                              className="hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                              size="icon"
+                              onClick={() => setEditEntry({ rackId, entry })}
+                              title="Edit Entry"
                             >
-                              <Eye className="w-4 h-4 mr-1" />
-                              Details
+                              <Pencil className="w-4 h-4" />
                             </Button>
                           </div>
                         </TableCell>
@@ -217,13 +220,22 @@ export default function InventoryList() {
               </Table>
             </div>
           )}
+
+          {/* Search Results Count */}
+          {isSearching && hasSearchResults && (
+            <div className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
+              Showing {filteredInventory.length} of {inventory.length} {inventory.length === 1 ? 'item' : 'items'}
+            </div>
+          )}
         </CardContent>
       </Card>
 
+      {/* Lightbox */}
       {lightboxImage && (
         <ImageLightbox imageUrl={lightboxImage} onClose={() => setLightboxImage(null)} />
       )}
 
+      {/* Detail Modal */}
       {detailEntry && (
         <InventoryDetailModal
           rackId={detailEntry.rackId}
@@ -232,11 +244,12 @@ export default function InventoryList() {
         />
       )}
 
+      {/* Edit Modal */}
       {editEntry && (
         <FabricEditModal
           rackId={editEntry.rackId}
           entry={editEntry.entry}
-          open={!!editEntry}
+          open={true}
           onClose={() => setEditEntry(null)}
         />
       )}

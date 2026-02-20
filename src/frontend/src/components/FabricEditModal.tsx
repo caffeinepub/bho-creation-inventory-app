@@ -3,23 +3,44 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, Upload, X, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useUpdateFabricEntry } from '../hooks/useQueries';
 import { ExternalBlob } from '../backend';
-import type { FabricInventoryEntry } from '../backend';
+import type { FabricEntry } from '../backend';
 import { toast } from 'sonner';
+
+const ITEM_TYPES = [
+  'Fabric',
+  'Thread',
+  'Button',
+  'Zipper',
+  'Lace',
+  'Other Materials',
+];
+
+const QUANTITY_UNITS = [
+  'meters',
+  'pieces',
+  'kilograms',
+  'rolls',
+  'packets',
+  'dozens',
+  'units',
+];
 
 interface FabricEditModalProps {
   rackId: string;
-  entry: FabricInventoryEntry;
+  entry: FabricEntry;
   open: boolean;
   onClose: () => void;
 }
 
 export default function FabricEditModal({ rackId, entry, open, onClose }: FabricEditModalProps) {
   const [fabricName, setFabricName] = useState(entry.fabricName);
-  const [newRackId, setNewRackId] = useState(rackId);
+  const [itemType, setItemType] = useState(entry.itemType);
+  const [unit, setUnit] = useState(entry.unit);
   const [quantity, setQuantity] = useState(entry.quantity.toString());
   const [purchaseDate, setPurchaseDate] = useState(
     entry.purchaseDate ? new Date(Number(entry.purchaseDate) / 1_000_000).toISOString().split('T')[0] : ''
@@ -39,7 +60,8 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
   useEffect(() => {
     if (open) {
       setFabricName(entry.fabricName);
-      setNewRackId(rackId);
+      setItemType(entry.itemType);
+      setUnit(entry.unit);
       setQuantity(entry.quantity.toString());
       setPurchaseDate(
         entry.purchaseDate ? new Date(Number(entry.purchaseDate) / 1_000_000).toISOString().split('T')[0] : ''
@@ -50,13 +72,13 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
       setBillPhotoPreview(entry.billPhoto ? entry.billPhoto.getDirectURL() : null);
       setUploadProgress({});
     }
-  }, [open, entry, rackId]);
+  }, [open, entry]);
 
   const handleFabricPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error('Fabric photo must be less than 5MB');
+        toast.error('Item photo must be less than 5MB');
         return;
       }
       setFabricPhotoFile(file);
@@ -116,19 +138,20 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
       await updateMutation.mutateAsync({
         oldRackId: rackId,
         updatedData: {
+          itemType,
           fabricName,
-          rackId: newRackId,
           quantity: quantityNum,
+          unit,
           fabricPhoto: fabricPhotoBlob,
           purchaseDate: purchaseDateBigInt,
           billPhoto: billPhotoBlob,
         },
       });
 
-      toast.success('Fabric entry updated successfully!');
+      toast.success('Inventory item updated successfully!');
       onClose();
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update fabric entry');
+      toast.error(error.message || 'Failed to update inventory item');
     }
   };
 
@@ -138,16 +161,33 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Fabric Entry</DialogTitle>
+          <DialogTitle>Edit Inventory Item</DialogTitle>
           <DialogDescription>
-            Update fabric details, photos, and quantity
+            Update item details, photos, and quantity
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Fabric Name */}
+          {/* Item Type */}
           <div className="space-y-2">
-            <Label htmlFor="fabricName">Fabric Name *</Label>
+            <Label htmlFor="itemType">Item Type *</Label>
+            <Select value={itemType} onValueChange={setItemType} required>
+              <SelectTrigger id="itemType">
+                <SelectValue placeholder="Select item type" />
+              </SelectTrigger>
+              <SelectContent>
+                {ITEM_TYPES.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Item Name */}
+          <div className="space-y-2">
+            <Label htmlFor="fabricName">Item Name *</Label>
             <Input
               id="fabricName"
               value={fabricName}
@@ -157,31 +197,37 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
             />
           </div>
 
-          {/* Rack ID */}
-          <div className="space-y-2">
-            <Label htmlFor="rackId">Rack ID *</Label>
-            <Input
-              id="rackId"
-              value={newRackId}
-              onChange={(e) => setNewRackId(e.target.value)}
-              placeholder="e.g., R-001"
-              required
-            />
-          </div>
+          {/* Quantity and Unit */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="quantity">Quantity *</Label>
+              <Input
+                id="quantity"
+                type="number"
+                step="0.01"
+                min="0"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="e.g., 100.5"
+                required
+              />
+            </div>
 
-          {/* Quantity */}
-          <div className="space-y-2">
-            <Label htmlFor="quantity">Quantity (meters) *</Label>
-            <Input
-              id="quantity"
-              type="number"
-              step="0.01"
-              min="0"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              placeholder="e.g., 100.5"
-              required
-            />
+            <div className="space-y-2">
+              <Label htmlFor="unit">Unit *</Label>
+              <Select value={unit} onValueChange={setUnit} required>
+                <SelectTrigger id="unit">
+                  <SelectValue placeholder="Select unit" />
+                </SelectTrigger>
+                <SelectContent>
+                  {QUANTITY_UNITS.map((u) => (
+                    <SelectItem key={u} value={u}>
+                      {u}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Purchase Date */}
@@ -195,14 +241,14 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
             />
           </div>
 
-          {/* Fabric Photo */}
+          {/* Item Photo */}
           <div className="space-y-2">
-            <Label htmlFor="fabricPhoto">Fabric Photo</Label>
+            <Label htmlFor="fabricPhoto">Item Photo</Label>
             {fabricPhotoPreview && (
               <div className="relative w-full h-48 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700">
                 <img
                   src={fabricPhotoPreview}
-                  alt="Fabric preview"
+                  alt="Item preview"
                   className="w-full h-full object-cover"
                 />
                 <button
@@ -229,7 +275,7 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
             </div>
             {uploadProgress.fabric !== undefined && (
               <div className="text-sm text-amber-600">
-                Uploading fabric photo: {uploadProgress.fabric}%
+                Uploading item photo: {uploadProgress.fabric}%
               </div>
             )}
           </div>
@@ -277,7 +323,7 @@ export default function FabricEditModal({ rackId, entry, open, onClose }: Fabric
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                {updateMutation.error?.message || 'Failed to update fabric entry'}
+                {updateMutation.error?.message || 'Failed to update inventory item'}
               </AlertDescription>
             </Alert>
           )}

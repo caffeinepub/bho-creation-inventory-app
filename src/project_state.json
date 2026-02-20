@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 21,
+  "projectStateVersion": 27,
   "summary": "Web-based inventory management application for Bho Creation clothing manufacturing company. Track fabric stock using barcode scanning (via device camera). Features: role-based authentication (Master Admin, Office Staff, Workers), individual user accounts with ID/password, fabric inventory management with add/remove/deduct quantities, complete audit trail tracking who added/removed fabrics, real-time data sync across all users. Admin panel for user management and permission assignment. Email-based password reset for office staff. Mobile-responsive design for phone/desktop browsers.",
   "architectural_notes": [
     "Cloud backend needed for multi-user sync (Firebase or similar)",
@@ -19,6 +19,7 @@
     "Previous build attempts failed due to Android/web platform mismatch"
   ],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- App icon for Progressive Web App with Bho Creation logo, optimized for mobile home screens (app-icon-192.dim_192x192.png)\n- App icon for Progressive Web App with Bho Creation logo, high resolution for splash screens (app-icon-512.dim_512x512.png)\n- Apple Touch Icon for iOS home screen with Bho Creation logo (apple-touch-icon.dim_180x180.png)",
   "existing_features": [
     {
       "id": "feature-implement-user-authentication-system-allowing-users-to-create-accounts-with-username-and-password-log-in-and-maintain-separate-inventory-data-per-user-account",
@@ -275,6 +276,118 @@
         "REQ-42"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-loginpage-component-frontend-src-pages-loginpage-tsx-to-add-a-username-password-login-form-alongside-the-existing-internet-identity-button-allowing-users-to-choose-between-internet-identity-authentication-or-logging-in-with-credentials-username-and-password-created-by-the-admin",
+      "title": "Update the LoginPage component (frontend/src/pages/LoginPage.tsx) to add a username/password login form alongside the existing Internet Identity button, allowing users to choose between Internet Identity authentication or logging in with credentials (username and password) created by the admin",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-react-query-mutation-hook-useloginwithcredentials-in-frontend-src-hooks-usequeries-ts-that-calls-the-backend-loginwithcredentials-function-and-handles-authentication-state-management",
+      "title": "Create a React Query mutation hook 'useLoginWithCredentials' in frontend/src/hooks/useQueries.ts that calls the backend loginWithCredentials function and handles authentication state management",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-authentication-flow-in-app-tsx-to-support-both-internet-identity-authentication-and-username-password-authentication-methods-ensuring-both-paths-properly-set-user-profile-and-authentication-state",
+      "title": "Update the authentication flow in App.tsx to support both Internet Identity authentication and username/password authentication methods, ensuring both paths properly set user profile and authentication state",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-addfabricpage-form-frontend-src-pages-addfabricpage-tsx-to-include-a-dropdown-select-field-for-item-type-with-predefined-options-fabric-thread-button-zipper-lace-other-materials-and-a-dropdown-select-field-for-quantity-unit-with-options-meters-pieces-kilograms-rolls-packets-dozens-units",
+      "title": "Update the AddFabricPage form (frontend/src/pages/AddFabricPage.tsx) to include a dropdown/select field for 'Item Type' with predefined options (Fabric, Thread, Button, Zipper, Lace, Other Materials) and a dropdown/select field for 'Quantity Unit' with options (meters, pieces, kilograms, rolls, packets, dozens, units)",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-inventorylist-component-frontend-src-components-inventorylist-tsx-to-display-the-item-type-and-quantity-unit-alongside-each-inventory-entry-showing-quantity-values-with-their-corresponding-units-e-g-50-meters-100-pieces-5-kilograms",
+      "title": "Update the InventoryList component (frontend/src/components/InventoryList.tsx) to display the item type and quantity unit alongside each inventory entry, showing quantity values with their corresponding units (e.g., '50 meters', '100 pieces', '5 kilograms')",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-fabriceditmodal-component-frontend-src-components-fabriceditmodal-tsx-to-include-editable-dropdown-fields-for-item-type-and-quantity-unit-allowing-users-to-change-these-values-when-editing-existing-inventory-entries",
+      "title": "Update the FabricEditModal component (frontend/src/components/FabricEditModal.tsx) to include editable dropdown fields for Item Type and Quantity Unit, allowing users to change these values when editing existing inventory entries",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-inventorydetailmodal-component-frontend-src-components-inventorydetailmodal-tsx-to-display-the-item-type-and-quantity-unit-in-the-detailed-view-showing-complete-information-about-the-inventory-entry-including-its-category-and-measurement-unit",
+      "title": "Update the InventoryDetailModal component (frontend/src/components/InventoryDetailModal.tsx) to display the item type and quantity unit in the detailed view, showing complete information about the inventory entry including its category and measurement unit",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-search-filter-functionality-in-inventorylist-component-to-include-item-type-filtering-allowing-users-to-search-and-filter-inventory-entries-by-item-type-in-addition-to-existing-fabric-name-and-rack-id-search",
+      "title": "Enhance the search/filter functionality in InventoryList component to include item type filtering, allowing users to search and filter inventory entries by item type in addition to existing fabric name and rack ID search",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-quantitydeductionform-component-frontend-src-components-quantitydeductionform-tsx-to-display-the-quantity-unit-of-the-selected-fabric-item-showing-users-what-unit-they-are-adjusting-e-g-increase-decrease-quantity-in-meters-or-pieces-or-kilograms",
+      "title": "Update the QuantityDeductionForm component (frontend/src/components/QuantityDeductionForm.tsx) to display the quantity unit of the selected fabric/item, showing users what unit they are adjusting (e.g., 'Increase/Decrease quantity in meters' or 'pieces' or 'kilograms')",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-web-app-manifest-file-frontend-public-manifest-json-that-defines-the-app-name-as-bho-creation-inventory-sets-the-app-as-standalone-display-mode-configures-app-icons-for-various-sizes-192x192-512x512-and-specifies-the-start-url-and-theme-colors-matching-the-current-amber-orange-color-scheme",
+      "title": "Create a Web App Manifest file (frontend/public/manifest.json) that defines the app name as 'Bho Creation Inventory', sets the app as standalone display mode, configures app icons for various sizes (192x192, 512x512), and specifies the start URL and theme colors matching the current amber/orange color scheme",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-register-a-service-worker-frontend-public-sw-js-that-implements-offline-caching-strategy-for-static-assets-html-css-js-images-and-enables-the-app-to-function-when-internet-connection-is-temporarily-unavailable",
+      "title": "Register a Service Worker (frontend/public/sw.js) that implements offline caching strategy for static assets (HTML, CSS, JS, images) and enables the app to function when internet connection is temporarily unavailable",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-index-html-to-include-the-web-app-manifest-link-reference-and-add-meta-tags-for-mobile-app-configuration-including-viewport-settings-apple-mobile-web-app-capable-and-theme-color-meta-tags",
+      "title": "Update frontend/index.html to include the web app manifest link reference and add meta tags for mobile app configuration including viewport settings, apple-mobile-web-app-capable, and theme-color meta tags",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-install-prompt-component-frontend-src-components-installprompt-tsx-that-detects-when-the-app-can-be-installed-to-the-home-screen-and-displays-a-banner-or-button-prompting-users-to-add-to-home-screen-with-appropriate-messaging-for-android-and-ios-devices",
+      "title": "Add an install prompt component (frontend/src/components/InstallPrompt.tsx) that detects when the app can be installed to the home screen and displays a banner or button prompting users to 'Add to Home Screen' with appropriate messaging for Android and iOS devices",
+      "reqIds": [
+        "REQ-59"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-optimize-the-application-for-mobile-touch-interactions-by-ensuring-all-interactive-elements-have-adequate-touch-target-sizes-minimum-44x44-pixels-implementing-touch-friendly-gestures-for-barcode-scanning-and-improving-form-input-experiences-on-mobile-keyboards",
+      "title": "Optimize the application for mobile touch interactions by ensuring all interactive elements have adequate touch target sizes (minimum 44x44 pixels), implementing touch-friendly gestures for barcode scanning, and improving form input experiences on mobile keyboards",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -475,6 +588,44 @@
       "summary": "Update the backend deductQuantity function or create a new adjustQuantity function in main.mo that accepts both positive (increase) and negative (decrease) quantity adjustments for a fabric entry identified by rack ID",
       "reqIds": [
         "REQ-41"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-45",
+      "summary": "Create a new backend function 'loginWithCredentials' in main.mo that accepts username and password as Text parameters, verifies the credentials against stored user accounts, and returns the authenticated user's profile if credentials are valid or an error if authentication fails",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-46",
+      "summary": "Extend the backend FabricEntry type in main.mo to include an itemType field (Text) that distinguishes between different inventory categories (e.g., 'Fabric', 'Thread', 'Button', 'Zipper', 'Lace', 'Other Materials'), allowing the system to track various clothing production materials beyond just fabrics",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-47",
+      "summary": "Add a unit field (Text) to the backend FabricEntry type in main.mo to support flexible quantity measurement units (e.g., 'meters', 'pieces', 'kilograms', 'rolls', 'packets', 'dozens'), replacing the hardcoded meters assumption throughout the system",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "Convert the web application to a native mobile app",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-52",
+      "summary": "Update frontend/src/main.tsx to register the service worker on application load, handling service worker lifecycle events (install, activate, update) and providing user notifications when new app versions are available",
+      "reqIds": [
+        "REQ-58"
       ],
       "status": "pending"
     }

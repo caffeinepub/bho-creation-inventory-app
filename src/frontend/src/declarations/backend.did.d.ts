@@ -19,21 +19,25 @@ export interface AuditLogEntry {
   'rackId' : string,
 }
 export type ExternalBlob = Uint8Array;
-export interface FabricInventoryEntry {
+export interface FabricEntry {
   'fabricName' : string,
   'purchaseDate' : [] | [bigint],
   'billPhoto' : [] | [ExternalBlob],
+  'unit' : string,
   'fabricPhoto' : [] | [ExternalBlob],
+  'itemType' : string,
   'quantity' : number,
-  'rackId' : string,
 }
+export type LoginResult = { 'error' : string } |
+  { 'success' : UserProfile };
 export interface UpdateFabricData {
   'fabricName' : string,
   'purchaseDate' : [] | [bigint],
   'billPhoto' : [] | [ExternalBlob],
+  'unit' : string,
   'fabricPhoto' : [] | [ExternalBlob],
+  'itemType' : string,
   'quantity' : number,
-  'rackId' : string,
 }
 export interface UserProfile {
   'username' : string,
@@ -78,7 +82,9 @@ export interface _SERVICE {
         'fabricName' : string,
         'purchaseDate' : [] | [bigint],
         'billPhoto' : [] | [ExternalBlob],
+        'unit' : string,
         'fabricPhoto' : [] | [ExternalBlob],
+        'itemType' : string,
         'quantity' : number,
       },
     ],
@@ -87,20 +93,24 @@ export interface _SERVICE {
   'adjustQuantity' : ActorMethod<[string, number], string>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'assignUserRole' : ActorMethod<[Principal, string], string>,
-  'createUser' : ActorMethod<[Principal, string, string, string], string>,
+  'createUser' : ActorMethod<
+    [Principal, string, string, string, string],
+    string
+  >,
   'getAllInventoryFabricEntries' : ActorMethod<
     [],
-    Array<[string, FabricInventoryEntry]>
+    Array<[string, FabricEntry]>
   >,
   'getAllUsers' : ActorMethod<[], Array<[Principal, UserProfile]>>,
   'getAuditLog' : ActorMethod<[], Array<AuditLogEntry>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
-  'getInventory' : ActorMethod<[], Array<[string, FabricInventoryEntry]>>,
+  'getInventory' : ActorMethod<[], Array<[string, FabricEntry]>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'loginWithCredentials' : ActorMethod<[string, string], LoginResult>,
   'promoteToMasterAdmin' : ActorMethod<
-    [{ 'username' : string, 'name' : string }],
+    [{ 'username' : string, 'password' : string, 'name' : string }],
     string
   >,
   'removeFabricEntry' : ActorMethod<[string], string>,
