@@ -1,42 +1,105 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-19T19:10:40.404Z",
+  "generatedAt": "2026-02-20T03:13:44.479Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 1,
+    "total": 7,
+    "implemented": 5,
     "items": [
       {
-        "id": "REQ-34",
-        "summary": "Replace the current logo image (101843004_247003263392167_3873501175990976512_n.jpg) used in the Layout component header with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
+        "id": "REQ-36",
+        "summary": "Add an edit button to each fabric entry in the inventory list (InventoryList component) that opens an edit modal allowing users to modify all fabric details including fabric name, rack ID, quantity, purchase date, fabric photo, and bill photo",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/assets/generated/bho-creation-logo.dim_200x200.png"
+          "frontend/src/components/FabricEditModal.tsx",
+          "frontend/src/components/InventoryList.tsx"
         ],
         "matchedFiles": [
-          "frontend/public/assets/generated/bho-creation-logo.dim_200x200.png"
+          "frontend/src/components/FabricEditModal.tsx",
+          "frontend/src/components/InventoryList.tsx"
         ]
       },
       {
-        "id": "REQ-35",
-        "summary": "Update the Layout component (frontend/src/components/Layout.tsx) to reference the new clothing brand logo image file instead of the current 101843004_247003263392167_3873501175990976512_n.jpg",
-        "status": "missing",
-        "plannedFiles": [
-          "frontend/src/components/Layout.tsx"
-        ],
+        "id": "REQ-37",
+        "summary": "Create a backend function updateFabricEntry in main.mo that accepts a fabric ID and updated fabric data (name, rackId, quantity, purchaseDate, fabricPhoto blob, billPhoto blob) and updates the existing fabric entry while preserving audit trail",
+        "status": "unknown",
+        "plannedFiles": [],
         "matchedFiles": []
+      },
+      {
+        "id": "REQ-38",
+        "summary": "Create a React Query mutation hook useUpdateFabricEntry in useQueries.ts that calls the backend updateFabricEntry function and invalidates the inventory queries on success",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-39",
+        "summary": "Update the barcode scanning functionality so that when a barcode is scanned, the system automatically selects the fabric entry whose name or rack ID matches the scanned code, and displays only quantity increase/decrease controls (not full edit options)",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ScanPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ScanPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-40",
+        "summary": "Update the QuantityDeductionForm component to support both increasing and decreasing fabric quantity, replacing the current deduction-only interface with increment/decrement controls or separate increase/decrease input options",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/QuantityDeductionForm.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/QuantityDeductionForm.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-41",
+        "summary": "Update the backend deductQuantity function or create a new adjustQuantity function in main.mo that accepts both positive (increase) and negative (decrease) quantity adjustments for a fabric entry identified by rack ID",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-42",
+        "summary": "Update the ScanPage component to implement automatic fabric selection logic: when a barcode is scanned, search the inventory for a fabric whose name or rack ID matches the scanned code, and if found, automatically populate the QuantityDeductionForm with that fabric's details",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ScanPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ScanPage.tsx"
+        ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
     "feature_evidence.json",
+    "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/public/assets/generated/bho-creation-logo.dim_200x200.png",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/FabricEditModal.tsx",
+    "frontend/src/components/InventoryList.tsx",
+    "frontend/src/components/QuantityDeductionForm.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/ScanPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

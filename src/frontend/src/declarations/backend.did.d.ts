@@ -27,6 +27,14 @@ export interface FabricInventoryEntry {
   'quantity' : number,
   'rackId' : string,
 }
+export interface UpdateFabricData {
+  'fabricName' : string,
+  'purchaseDate' : [] | [bigint],
+  'billPhoto' : [] | [ExternalBlob],
+  'fabricPhoto' : [] | [ExternalBlob],
+  'quantity' : number,
+  'rackId' : string,
+}
 export interface UserProfile {
   'username' : string,
   'name' : string,
@@ -76,6 +84,7 @@ export interface _SERVICE {
     ],
     string
   >,
+  'adjustQuantity' : ActorMethod<[string, number], string>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'assignUserRole' : ActorMethod<[Principal, string], string>,
   'createUser' : ActorMethod<[Principal, string, string, string], string>,
@@ -96,6 +105,7 @@ export interface _SERVICE {
   >,
   'removeFabricEntry' : ActorMethod<[string], string>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'updateFabricEntry' : ActorMethod<[string, UpdateFabricData], string>,
   'updateFabricQuantity' : ActorMethod<[string, number], string>,
 }
 export declare const idlService: IDL.ServiceClass;

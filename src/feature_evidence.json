@@ -2,9 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-replace-the-current-logo-image-101843004-247003263392167-3873501175990976512-n-jpg-used-in-the-layout-component-header-with-a-new-clothing-brand-appropriate-logo-that-better-represents-bho-creation-as-a-clothing-manufacturing-company",
-      "featureTitle": "Replace the current logo image (101843004_247003263392167_3873501175990976512_n.jpg) used in the Layout component header with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
-      "files": [],
+      "featureId": "feature-add-an-edit-button-to-each-fabric-entry-in-the-inventory-list-inventorylist-component-that-opens-an-edit-modal-allowing-users-to-modify-all-fabric-details-including-fabric-name-rack-id-quantity-purchase-date-fabric-photo-and-bill-photo",
+      "featureTitle": "Add an edit button to each fabric entry in the inventory list (InventoryList component) that opens an edit modal allowing users to modify all fabric details including fabric name, rack ID, quantity, purchase date, fabric photo, and bill photo",
+      "files": [
+        "frontend/src/components/FabricEditModal.tsx",
+        "frontend/src/components/InventoryList.tsx"
+      ],
       "components": [
         "authorization@4.0.0",
         "qr-code@1.0.0",
@@ -17,7 +20,96 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-34"
+        "REQ-36"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-react-query-mutation-hook-useupdatefabricentry-in-usequeries-ts-that-calls-the-backend-updatefabricentry-function-and-invalidates-the-inventory-queries-on-success",
+      "featureTitle": "Create a React Query mutation hook useUpdateFabricEntry in useQueries.ts that calls the backend updateFabricEntry function and invalidates the inventory queries on success",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "qr-code@1.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-38"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-barcode-scanning-functionality-so-that-when-a-barcode-is-scanned-the-system-automatically-selects-the-fabric-entry-whose-name-or-rack-id-matches-the-scanned-code-and-displays-only-quantity-increase-decrease-controls-not-full-edit-options",
+      "featureTitle": "Update the barcode scanning functionality so that when a barcode is scanned, the system automatically selects the fabric entry whose name or rack ID matches the scanned code, and displays only quantity increase/decrease controls (not full edit options)",
+      "files": [
+        "frontend/src/pages/ScanPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "qr-code@1.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-39"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-quantitydeductionform-component-to-support-both-increasing-and-decreasing-fabric-quantity-replacing-the-current-deduction-only-interface-with-increment-decrement-controls-or-separate-increase-decrease-input-options",
+      "featureTitle": "Update the QuantityDeductionForm component to support both increasing and decreasing fabric quantity, replacing the current deduction-only interface with increment/decrement controls or separate increase/decrease input options",
+      "files": [
+        "frontend/src/components/QuantityDeductionForm.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "qr-code@1.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-40"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-scanpage-component-to-implement-automatic-fabric-selection-logic-when-a-barcode-is-scanned-search-the-inventory-for-a-fabric-whose-name-or-rack-id-matches-the-scanned-code-and-if-found-automatically-populate-the-quantitydeductionform-with-that-fabric-s-details",
+      "featureTitle": "Update the ScanPage component to implement automatic fabric selection logic: when a barcode is scanned, search the inventory for a fabric whose name or rack ID matches the scanned code, and if found, automatically populate the QuantityDeductionForm with that fabric's details",
+      "files": [
+        "frontend/src/pages/ScanPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "qr-code@1.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-42"
       ],
       "confidence": "high"
     }

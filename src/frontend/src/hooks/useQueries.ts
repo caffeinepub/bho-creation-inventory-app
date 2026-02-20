@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile, FabricInventoryEntry, ExternalBlob } from '../backend';
+import type { UserProfile, FabricInventoryEntry, ExternalBlob, UpdateFabricData } from '../backend';
 import { Principal } from '@dfinity/principal';
 
 export function useSaveCallerUserProfile() {
@@ -61,6 +61,48 @@ export function useAddFabricEntry() {
         purchaseDate,
         billPhoto,
       });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+    },
+  });
+}
+
+export function useUpdateFabricEntry() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      oldRackId,
+      updatedData,
+    }: {
+      oldRackId: string;
+      updatedData: UpdateFabricData;
+    }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.updateFabricEntry(oldRackId, updatedData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+    },
+  });
+}
+
+export function useAdjustQuantity() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      rackId,
+      quantityChange,
+    }: {
+      rackId: string;
+      quantityChange: number;
+    }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.adjustQuantity(rackId, quantityChange);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory'] });

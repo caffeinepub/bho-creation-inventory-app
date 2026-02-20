@@ -5,16 +5,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Package, AlertCircle, Image as ImageIcon, Eye, Search, X } from 'lucide-react';
+import { Package, AlertCircle, Image as ImageIcon, Eye, Search, X, Pencil } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import ImageLightbox from './ImageLightbox';
 import InventoryDetailModal from './InventoryDetailModal';
+import FabricEditModal from './FabricEditModal';
 import type { FabricInventoryEntry } from '../backend';
 
 export default function InventoryList() {
   const { data: inventory, isLoading, error } = useGetInventory();
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [detailEntry, setDetailEntry] = useState<{ rackId: string; entry: FabricInventoryEntry } | null>(null);
+  const [editEntry, setEditEntry] = useState<{ rackId: string; entry: FabricInventoryEntry } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filter inventory based on search term
@@ -187,15 +189,26 @@ export default function InventoryList() {
                           )}
                         </TableCell>
                         <TableCell className="text-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setDetailEntry({ rackId, entry })}
-                            className="hover:bg-amber-100 dark:hover:bg-amber-900/30"
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            Details
-                          </Button>
+                          <div className="flex items-center justify-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setEditEntry({ rackId, entry })}
+                              className="hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                            >
+                              <Pencil className="w-4 h-4 mr-1" />
+                              Edit
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setDetailEntry({ rackId, entry })}
+                              className="hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              Details
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -216,6 +229,15 @@ export default function InventoryList() {
           rackId={detailEntry.rackId}
           entry={detailEntry.entry}
           onClose={() => setDetailEntry(null)}
+        />
+      )}
+
+      {editEntry && (
+        <FabricEditModal
+          rackId={editEntry.rackId}
+          entry={editEntry.entry}
+          open={!!editEntry}
+          onClose={() => setEditEntry(null)}
         />
       )}
     </>

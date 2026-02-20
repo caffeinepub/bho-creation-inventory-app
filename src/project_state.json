@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 19,
+  "projectStateVersion": 21,
   "summary": "Web-based inventory management application for Bho Creation clothing manufacturing company. Track fabric stock using barcode scanning (via device camera). Features: role-based authentication (Master Admin, Office Staff, Workers), individual user accounts with ID/password, fabric inventory management with add/remove/deduct quantities, complete audit trail tracking who added/removed fabrics, real-time data sync across all users. Admin panel for user management and permission assignment. Email-based password reset for office staff. Mobile-responsive design for phone/desktop browsers.",
   "architectural_notes": [
     "Cloud backend needed for multi-user sync (Firebase or similar)",
@@ -10,14 +10,15 @@
     "Device camera integration for barcode scanning in web browsers",
     "Mobile-responsive design for phone and desktop browsers",
     "Three-tier role hierarchy: Master Admin > Office Staff > Workers",
-    "Image storage and retrieval system needed for fabric photos and bill receipts"
+    "Image storage and retrieval system needed for fabric photos and bill receipts",
+    "Custom username/password authentication system replacing Internet Identity",
+    "Predefined master admin account with email verification"
   ],
   "known_issues": [
     "Platform limitation: Cannot build Android native apps or generate Android Studio code",
     "Previous build attempts failed due to Android/web platform mismatch"
   ],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Professional clothing brand logo for Bho Creation featuring fashion/garment industry elements like thread, fabric, or clothing silhouettes with clean modern design (bho-creation-logo.dim_200x200.png)",
   "existing_features": [
     {
       "id": "feature-implement-user-authentication-system-allowing-users-to-create-accounts-with-username-and-password-log-in-and-maintain-separate-inventory-data-per-user-account",
@@ -234,6 +235,46 @@
         "REQ-34"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-an-edit-button-to-each-fabric-entry-in-the-inventory-list-inventorylist-component-that-opens-an-edit-modal-allowing-users-to-modify-all-fabric-details-including-fabric-name-rack-id-quantity-purchase-date-fabric-photo-and-bill-photo",
+      "title": "Add an edit button to each fabric entry in the inventory list (InventoryList component) that opens an edit modal allowing users to modify all fabric details including fabric name, rack ID, quantity, purchase date, fabric photo, and bill photo",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-react-query-mutation-hook-useupdatefabricentry-in-usequeries-ts-that-calls-the-backend-updatefabricentry-function-and-invalidates-the-inventory-queries-on-success",
+      "title": "Create a React Query mutation hook useUpdateFabricEntry in useQueries.ts that calls the backend updateFabricEntry function and invalidates the inventory queries on success",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-barcode-scanning-functionality-so-that-when-a-barcode-is-scanned-the-system-automatically-selects-the-fabric-entry-whose-name-or-rack-id-matches-the-scanned-code-and-displays-only-quantity-increase-decrease-controls-not-full-edit-options",
+      "title": "Update the barcode scanning functionality so that when a barcode is scanned, the system automatically selects the fabric entry whose name or rack ID matches the scanned code, and displays only quantity increase/decrease controls (not full edit options)",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-quantitydeductionform-component-to-support-both-increasing-and-decreasing-fabric-quantity-replacing-the-current-deduction-only-interface-with-increment-decrement-controls-or-separate-increase-decrease-input-options",
+      "title": "Update the QuantityDeductionForm component to support both increasing and decreasing fabric quantity, replacing the current deduction-only interface with increment/decrement controls or separate increase/decrease input options",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-scanpage-component-to-implement-automatic-fabric-selection-logic-when-a-barcode-is-scanned-search-the-inventory-for-a-fabric-whose-name-or-rack-id-matches-the-scanned-code-and-if-found-automatically-populate-the-quantitydeductionform-with-that-fabric-s-details",
+      "title": "Update the ScanPage component to implement automatic fabric selection logic: when a barcode is scanned, search the inventory for a fabric whose name or rack ID matches the scanned code, and if found, automatically populate the QuantityDeductionForm with that fabric's details",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -388,6 +429,52 @@
       "summary": "Update the Layout component (frontend/src/components/Layout.tsx) to reference the new clothing brand logo image file instead of the current 101843004_247003263392167_3873501175990976512_n.jpg",
       "reqIds": [
         "REQ-35"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-33",
+      "summary": "Replace Internet Identity authentication with custom username/password login system where users login with admin-created credentials (no Internet Identity required)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-34",
+      "summary": "Create initial master admin account with email Aditya559314@gmail.com, username 'rahulboh', password 'rahul12boh', and Master Admin role",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-35",
+      "summary": "Add login option alongside existing authentication allowing users to login with username and password created by admin",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Add edit button to each fabric/product entry allowing users to modify all fabric details (name, quantity, bill photo, purchase date, etc.)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "When scanning barcode, automatically select the matching fabric by name/code and show quantity increase/decrease options only (no full edit)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Create a backend function updateFabricEntry in main.mo that accepts a fabric ID and updated fabric data (name, rackId, quantity, purchaseDate, fabricPhoto blob, billPhoto blob) and updates the existing fabric entry while preserving audit trail",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Update the backend deductQuantity function or create a new adjustQuantity function in main.mo that accepts both positive (increase) and negative (decrease) quantity adjustments for a fabric entry identified by rack ID",
+      "reqIds": [
+        "REQ-41"
       ],
       "status": "pending"
     }

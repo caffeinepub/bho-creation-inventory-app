@@ -35,6 +35,14 @@ export interface UserProfile {
     name: string;
     role: UserRole;
 }
+export interface UpdateFabricData {
+    fabricName: string;
+    purchaseDate?: bigint;
+    billPhoto?: ExternalBlob;
+    fabricPhoto?: ExternalBlob;
+    quantity: number;
+    rackId: string;
+}
 export enum UserRole {
     admin = "admin",
     user = "user",
@@ -48,6 +56,7 @@ export interface backendInterface {
         fabricPhoto?: ExternalBlob;
         quantity: number;
     }): Promise<string>;
+    adjustQuantity(rackId: string, quantityChange: number): Promise<string>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     assignUserRole(userPrincipal: Principal, role: string): Promise<string>;
     createUser(userPrincipal: Principal, name: string, username: string, role: string): Promise<string>;
@@ -65,5 +74,6 @@ export interface backendInterface {
     }): Promise<string>;
     removeFabricEntry(rackId: string): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    updateFabricEntry(rackId: string, updatedData: UpdateFabricData): Promise<string>;
     updateFabricQuantity(rackId: string, usedQuantity: number): Promise<string>;
 }

@@ -1,31 +1,52 @@
 {
   "kind": "build_request",
-  "title": "Replace logo with clothing brand appropriate image",
+  "title": "Add fabric edit functionality and enhanced barcode scanning with auto-selection",
   "projectName": "Bho Creation Inventory",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-34",
-      "text": "Replace the current logo image (101843004_247003263392167_3873501175990976512_n.jpg) used in the Layout component header with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
+      "id": "REQ-36",
+      "text": "Add an edit button to each fabric entry in the inventory list (InventoryList component) that opens an edit modal allowing users to modify all fabric details including fabric name, rack ID, quantity, purchase date, fabric photo, and bill photo",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-latest"
         ],
         "quotes": [
-          "Replace the logo use in corner of the site and side of Boh creation name Because this is clothing brand"
+          "edit button se kisi bhi fabric ka bill photo ya quantity ya name etc change kar sake"
         ]
       },
       "acceptanceCriteria": [
-        "New logo image is displayed in the site header corner next to 'Bho Creation' text",
-        "Logo visually represents a clothing/fashion brand aesthetic",
-        "Logo maintains proper sizing and alignment with the company name",
-        "Logo is stored as a static asset in frontend/public/assets/generated/"
+        "Each fabric row in the inventory list displays an edit button",
+        "Clicking the edit button opens a modal with a form pre-filled with current fabric data",
+        "The edit form includes inputs for fabric name, rack ID, quantity, purchase date, fabric photo upload, and bill photo upload",
+        "Users can update any combination of fields and save changes",
+        "Changes are persisted to the backend and reflected immediately in the inventory list"
       ]
     },
     {
-      "id": "REQ-35",
-      "text": "Update the Layout component (frontend/src/components/Layout.tsx) to reference the new clothing brand logo image file instead of the current 101843004_247003263392167_3873501175990976512_n.jpg",
+      "id": "REQ-37",
+      "text": "Create a backend function updateFabricEntry in main.mo that accepts a fabric ID and updated fabric data (name, rackId, quantity, purchaseDate, fabricPhoto blob, billPhoto blob) and updates the existing fabric entry while preserving audit trail",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "edit button se kisi bhi fabric ka bill photo ya quantity ya name etc change kar sake"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Function accepts fabric entry ID and all updatable fields as parameters",
+        "Function validates that the fabric entry exists before updating",
+        "Function updates the fabric entry with new values",
+        "Function logs the update action in the audit trail with user identity and timestamp",
+        "Function returns success/error result"
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "text": "Create a React Query mutation hook useUpdateFabricEntry in useQueries.ts that calls the backend updateFabricEntry function and invalidates the inventory queries on success",
       "target": "frontend",
       "source": {
         "messageIds": [
@@ -33,26 +54,108 @@
         ]
       },
       "acceptanceCriteria": [
-        "Layout component imports and displays the new logo image",
-        "Image path correctly references frontend/public/assets/generated/ directory",
-        "Logo renders properly in both mobile and desktop views"
+        "Hook accepts fabric ID and updated fabric data as parameters",
+        "Hook calls the backend updateFabricEntry function via the actor",
+        "Hook invalidates fabric inventory queries on successful update",
+        "Hook handles loading and error states appropriately"
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "text": "Update the barcode scanning functionality so that when a barcode is scanned, the system automatically selects the fabric entry whose name or rack ID matches the scanned code, and displays only quantity increase/decrease controls (not full edit options)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "bar code me fabric ka name code hoga to scan karane par vo fabric automatically select ho jaye or usame quantity increase or decrease karane ka option ajaye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After scanning a barcode, the system searches for a fabric entry where the fabric name or rack ID matches the scanned code",
+        "If a matching fabric is found, it is automatically selected and displayed",
+        "The quantity deduction form shows the selected fabric details with options to increase or decrease quantity only",
+        "Users cannot edit other fabric fields (name, photos, purchase date) through the barcode scan interface",
+        "If no matching fabric is found, display an appropriate message"
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "text": "Update the QuantityDeductionForm component to support both increasing and decreasing fabric quantity, replacing the current deduction-only interface with increment/decrement controls or separate increase/decrease input options",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "bar code se only quantity add or decrease kar sake"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The form displays the current quantity of the selected fabric",
+        "Users can choose to either increase or decrease the quantity",
+        "The interface provides clear controls for both operations (e.g., +/- buttons or radio selection with amount input)",
+        "Validation ensures quantity cannot be decreased below zero",
+        "The updated quantity is saved to the backend and reflected in the inventory immediately"
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "text": "Update the backend deductQuantity function or create a new adjustQuantity function in main.mo that accepts both positive (increase) and negative (decrease) quantity adjustments for a fabric entry identified by rack ID",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "bar code se only quantity add or decrease kar sake"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Function accepts rack ID and a signed integer quantity adjustment (positive for increase, negative for decrease)",
+        "Function finds the fabric entry by rack ID",
+        "Function applies the quantity adjustment to the current quantity",
+        "Function validates that the resulting quantity is not negative",
+        "Function logs the adjustment in the audit trail with user identity, timestamp, and adjustment type",
+        "Function returns the updated fabric entry or error"
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "text": "Update the ScanPage component to implement automatic fabric selection logic: when a barcode is scanned, search the inventory for a fabric whose name or rack ID matches the scanned code, and if found, automatically populate the QuantityDeductionForm with that fabric's details",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-latest"
+        ],
+        "quotes": [
+          "bar code me fabric ka name code hoga to scan karane par vo fabric automatically select ho jaye"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After a successful barcode scan, the system queries the inventory list for matching fabrics",
+        "The match is case-insensitive and checks both fabric name and rack ID fields",
+        "If a match is found, the fabric is automatically selected and its details are passed to the QuantityDeductionForm",
+        "If multiple matches are found, the first match is selected",
+        "If no match is found, display a user-friendly message indicating no fabric was found for that barcode"
       ]
     }
   ],
   "constraints": [
-    "Preserve existing Layout component structure and navigation functionality",
-    "Maintain current logo sizing and positioning relative to 'Bho Creation' text",
-    "Keep the logo as a static asset in frontend/public/assets/generated/"
+    "Do not modify Internet Identity authentication flow or useInternetIdentity hook",
+    "Preserve existing audit trail logging functionality when implementing edit and quantity adjustment features",
+    "Do not change the read-only UI component sources in frontend/src/components/ui",
+    "Maintain the single-actor architecture in the backend; all logic must remain in main.mo"
   ],
   "nonGoals": [
-    "Changing the company name 'Bho Creation'",
-    "Modifying the header layout or navigation structure",
-    "Altering color scheme or typography beyond the logo replacement"
+    "Implementing bulk edit functionality for multiple fabrics at once",
+    "Adding advanced barcode format detection or validation beyond basic string matching",
+    "Creating a barcode generation feature for printing rack labels",
+    "Implementing undo/redo functionality for edit operations"
   ],
   "imageRequirements": {
-    "required": [
-      "Professional clothing brand logo for Bho Creation featuring fashion/garment industry elements like thread, fabric, or clothing silhouettes with clean modern design (bho-creation-logo.dim_200x200.png)"
-    ],
+    "required": [],
     "edits": []
   }
 }

@@ -3,9 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Package, Minus } from 'lucide-react';
-import { useGetInventory, useUpdateFabricQuantity } from '../hooks/useQueries';
+import { AlertCircle, Package, Plus, Minus } from 'lucide-react';
+import { useGetInventory, useAdjustQuantity } from '../hooks/useQueries';
 import { toast } from 'sonner';
 
 interface QuantityDeductionFormProps {
@@ -13,9 +14,10 @@ interface QuantityDeductionFormProps {
 }
 
 export default function QuantityDeductionForm({ selectedRackId }: QuantityDeductionFormProps) {
-  const [usedQuantity, setUsedQuantity] = useState('');
+  const [operation, setOperation] = useState<'increase' | 'decrease'>('decrease');
+  const [adjustmentAmount, setAdjustmentAmount] = useState('');
   const { data: inventory } = useGetInventory();
-  const updateQuantityMutation = useUpdateFabricQuantity();
+  const adjustQuantityMutation = useAdjustQuantity();
 
   const fabricEntry = selectedRackId
     ? inventory?.find(([rackId]) => rackId === selectedRackId)?.[1]
@@ -23,7 +25,8 @@ export default function QuantityDeductionForm({ selectedRackId }: QuantityDeduct
 
   useEffect(() => {
     if (selectedRackId) {
-      setUsedQuantity('');
+      setAdjustmentAmount('');
+      setOperation('decrease');
     }
   }, [selectedRackId]);
 
@@ -35,26 +38,32 @@ export default function QuantityDeductionForm({ selectedRackId }: QuantityDeduct
       return;
     }
 
-    const quantity = parseFloat(usedQuantity);
-    if (isNaN(quantity) || quantity <= 0) {
-      toast.error('Please enter a valid quantity');
+    const amount = parseFloat(adjustmentAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Please enter a valid amount');
       return;
     }
 
-    if (quantity > fabricEntry.quantity) {
-      toast.error(`Cannot deduct ${quantity}m. Only ${fabricEntry.quantity}m available.`);
+    // Calculate the quantity change (positive for increase, negative for decrease)
+    const quantityChange = operation === 'increase' ? amount : -amount;
+
+    // Validate that decrease won't result in negative quantity
+    if (operation === 'decrease' && amount > fabricEntry.quantity) {
+      toast.error(`Cannot decrease by ${amount}m. Only ${fabricEntry.quantity}m available.`);
       return;
     }
 
     try {
-      await updateQuantityMutation.mutateAsync({
+      await adjustQuantityMutation.mutateAsync({
         rackId: selectedRackId,
-        usedQuantity: quantity,
+        quantityChange,
       });
-      toast.success(`Successfully deducted ${quantity}m from ${fabricEntry.fabricName}`);
-      setUsedQuantity('');
+      
+      const actionText = operation === 'increase' ? 'increased' : 'decreased';
+      toast.success(`Successfully ${actionText} ${fabricEntry.fabricName} by ${amount}m`);
+      setAdjustmentAmount('');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update quantity');
+      toast.error(error.message || 'Failed to adjust quantity');
     }
   };
 
@@ -70,7 +79,7 @@ export default function QuantityDeductionForm({ selectedRackId }: QuantityDeduct
               No Barcode Scanned
             </h3>
             <p className="text-neutral-600 dark:text-neutral-400">
-              Scan a rack barcode to view fabric details and update quantity
+              Scan a barcode to view fabric details and adjust quantity
             </p>
           </div>
         </CardContent>
@@ -96,9 +105,9 @@ export default function QuantityDeductionForm({ selectedRackId }: QuantityDeduct
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Deduct Fabric Quantity</CardTitle>
+        <CardTitle>Adjust Fabric Quantity</CardTitle>
         <CardDescription>
-          Update the quantity for the scanned rack
+          Increase or decrease the quantity for the scanned fabric
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -119,7 +128,7 @@ export default function QuantityDeductionForm({ selectedRackId }: QuantityDeduct
                 </code>
               </div>
               <div className="flex justify-between items-start">
-                <span className="text-sm text-neutral-600 dark:text-neutral-400">Available:</span>
+                <span className="text-sm text-neutral-600 dark:text-neutral-400">Current Quantity:</span>
                 <span className="font-bold text-lg text-amber-700 dark:text-amber-500">
                   {fabricEntry.quantity.toFixed(2)} m
                 </span>
@@ -127,40 +136,73 @@ export default function QuantityDeductionForm({ selectedRackId }: QuantityDeduct
             </div>
           </div>
 
-          {/* Quantity Input */}
+          {/* Operation Selection */}
+          <div className="space-y-3">
+            <Label>Operation</Label>
+            <RadioGroup value={operation} onValueChange={(value) => setOperation(value as 'increase' | 'decrease')}>
+              <div className="flex items-center space-x-2 p-3 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors">
+                <RadioGroupItem value="increase" id="increase" />
+                <Label htmlFor="increase" className="flex-1 cursor-pointer flex items-center gap-2">
+                  <Plus className="w-4 h-4 text-green-600" />
+                  <span>Increase Quantity</span>
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 p-3 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors">
+                <RadioGroupItem value="decrease" id="decrease" />
+                <Label htmlFor="decrease" className="flex-1 cursor-pointer flex items-center gap-2">
+                  <Minus className="w-4 h-4 text-red-600" />
+                  <span>Decrease Quantity</span>
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Amount Input */}
           <div className="space-y-2">
-            <Label htmlFor="usedQuantity">Quantity to Deduct (meters)</Label>
+            <Label htmlFor="adjustmentAmount">
+              Amount to {operation === 'increase' ? 'Add' : 'Deduct'} (meters)
+            </Label>
             <Input
-              id="usedQuantity"
+              id="adjustmentAmount"
               type="number"
               step="0.01"
               min="0"
-              max={fabricEntry.quantity}
-              value={usedQuantity}
-              onChange={(e) => setUsedQuantity(e.target.value)}
+              max={operation === 'decrease' ? fabricEntry.quantity : undefined}
+              value={adjustmentAmount}
+              onChange={(e) => setAdjustmentAmount(e.target.value)}
               placeholder="e.g., 10.5"
               required
             />
-            <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              Maximum: {fabricEntry.quantity.toFixed(2)} meters
-            </p>
+            {operation === 'decrease' && (
+              <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                Maximum: {fabricEntry.quantity.toFixed(2)} meters
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={updateQuantityMutation.isPending}
-            className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
+            disabled={adjustQuantityMutation.isPending}
+            className={`w-full ${
+              operation === 'increase'
+                ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'
+                : 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700'
+            } text-white`}
           >
-            {updateQuantityMutation.isPending ? (
+            {adjustQuantityMutation.isPending ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Updating...
+                Processing...
               </>
             ) : (
               <>
-                <Minus className="w-4 h-4 mr-2" />
-                Deduct Quantity
+                {operation === 'increase' ? (
+                  <Plus className="w-4 h-4 mr-2" />
+                ) : (
+                  <Minus className="w-4 h-4 mr-2" />
+                )}
+                {operation === 'increase' ? 'Increase' : 'Decrease'} Quantity
               </>
             )}
           </Button>

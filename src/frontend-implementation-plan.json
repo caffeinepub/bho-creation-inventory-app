@@ -1,38 +1,104 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Replace logo with clothing brand appropriate image",
+  "title": "Add fabric edit functionality and enhanced barcode scanning with auto-selection",
   "requirements": [
     {
-      "id": "REQ-34",
-      "summary": "Replace the current logo image with a new clothing brand appropriate logo that better represents Bho Creation as a clothing manufacturing company",
+      "id": "REQ-36",
+      "summary": "Add edit button and modal to InventoryList for modifying fabric details",
       "acceptanceCriteria": [
-        "New logo image is displayed in the site header corner next to 'Bho Creation' text",
-        "Logo visually represents a clothing/fashion brand aesthetic",
-        "Logo maintains proper sizing and alignment with the company name",
-        "Logo is stored as a static asset in frontend/public/assets/generated/"
+        "Each fabric row in the inventory list displays an edit button",
+        "Clicking the edit button opens a modal with a form pre-filled with current fabric data",
+        "The edit form includes inputs for fabric name, rack ID, quantity, purchase date, fabric photo upload, and bill photo upload",
+        "Users can update any combination of fields and save changes",
+        "Changes are persisted to the backend and reflected immediately in the inventory list"
       ],
       "file_operations": [
         {
-          "path": "frontend/public/assets/generated/bho-creation-logo.dim_200x200.png",
+          "path": "frontend/src/components/FabricEditModal.tsx",
           "operation": "create",
-          "description": "Add the generated clothing brand logo image to the static assets directory. This logo features fashion/garment industry elements and will replace the existing 101843004_247003263392167_3873501175990976512_n.jpg file."
+          "description": "Create a modal component for editing fabric entries. Include form fields for fabricName (text input), rackId (text input), quantity (number input), purchaseDate (date picker), fabricPhoto (file upload with preview using ExternalBlob), and billPhoto (file upload with preview using ExternalBlob). Pre-populate all fields with current fabric data passed as props. Use the blob-storage component's ExternalBlob class for handling photo uploads with upload progress tracking. Include save and cancel buttons. On save, call the useUpdateFabricEntry mutation hook. Display loading state during save. Use shadcn/ui Dialog, Input, Button, and Label components for consistent styling."
+        },
+        {
+          "path": "frontend/src/components/InventoryList.tsx",
+          "operation": "modify",
+          "description": "Add an edit button (using shadcn/ui Button with pencil icon) to each fabric row in the table. Add state for managing which fabric is being edited and whether the FabricEditModal is open. Wire the edit button click to open the FabricEditModal with the selected fabric's data. Import and render the FabricEditModal component with appropriate props (fabric data, onClose callback, open state). Ensure the modal closes after successful edit and the inventory list updates automatically via React Query cache invalidation."
         }
       ]
     },
     {
-      "id": "REQ-35",
-      "summary": "Update the Layout component to reference the new clothing brand logo image file",
+      "id": "REQ-38",
+      "summary": "Create React Query mutation hook for updating fabric entries",
       "acceptanceCriteria": [
-        "Layout component imports and displays the new logo image",
-        "Image path correctly references frontend/public/assets/generated/ directory",
-        "Logo renders properly in both mobile and desktop views"
+        "Hook accepts fabric ID and updated fabric data as parameters",
+        "Hook calls the backend updateFabricEntry function via the actor",
+        "Hook invalidates fabric inventory queries on successful update",
+        "Hook handles loading and error states appropriately"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Layout.tsx",
+          "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Update the logo image reference from 101843004_247003263392167_3873501175990976512_n.jpg to the new generated logo at frontend/public/assets/generated/bho-creation-logo.dim_200x200.png. Ensure the image path is correctly referenced in the img tag and maintains proper sizing and alignment with the 'Bho Creation' company name text in both mobile and desktop layouts."
+          "description": "Add a new mutation hook useUpdateFabricEntry that accepts rackId and UpdateFabricData (matching the backend interface type with fabricName, rackId, quantity, purchaseDate optional bigint, fabricPhoto optional ExternalBlob, billPhoto optional ExternalBlob). Use useMutation from React Query to call actor.updateFabricEntry(rackId, updatedData). On success, invalidate the 'inventoryList' query key to refresh the inventory display. Return mutation state including mutate function, isLoading, error, and isSuccess. Handle errors with appropriate error messages. Ensure the hook follows the same pattern as existing mutation hooks in the file."
+        }
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "summary": "Implement automatic fabric selection when barcode matches fabric name or rack ID",
+      "acceptanceCriteria": [
+        "After scanning a barcode, the system searches for a fabric entry where the fabric name or rack ID matches the scanned code",
+        "If a matching fabric is found, it is automatically selected and displayed",
+        "The quantity deduction form shows the selected fabric details with options to increase or decrease quantity only",
+        "Users cannot edit other fabric fields (name, photos, purchase date) through the barcode scan interface",
+        "If no matching fabric is found, display an appropriate message"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ScanPage.tsx",
+          "operation": "modify",
+          "description": "Update the ScanPage component to implement automatic fabric selection logic. When a barcode is scanned (via onRackSelected callback from BarcodeScannerView), fetch the full inventory list using the useGetInventory hook. Search the inventory for a fabric where either fabricName or rackId matches the scanned code (case-insensitive comparison using toLowerCase()). If a match is found, automatically populate the selectedRackId state with the matching rackId to trigger the QuantityDeductionForm. If multiple matches exist, select the first one. If no match is found, display a toast or alert message indicating 'No fabric found for scanned code: [code]'. Ensure the matching logic runs each time a new barcode is scanned."
+        }
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "summary": "Update QuantityDeductionForm to support both increasing and decreasing quantity",
+      "acceptanceCriteria": [
+        "The form displays the current quantity of the selected fabric",
+        "Users can choose to either increase or decrease the quantity",
+        "The interface provides clear controls for both operations (e.g., +/- buttons or radio selection with amount input)",
+        "Validation ensures quantity cannot be decreased below zero",
+        "The updated quantity is saved to the backend and reflected in the inventory immediately"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/QuantityDeductionForm.tsx",
+          "operation": "modify",
+          "description": "Replace the current deduction-only interface with increment/decrement controls. Add radio buttons or tabs for selecting 'Increase' or 'Decrease' operation mode. Update the form to accept a quantity adjustment value (positive or negative). Display the current fabric quantity prominently. Add validation to ensure that if 'Decrease' is selected, the resulting quantity (current - amount) is not negative. Update the form submission to call the new useAdjustQuantity mutation hook (passing rackId and signed quantity change: positive for increase, negative for decrease). Update button labels to reflect the selected operation (e.g., 'Increase Quantity' or 'Decrease Quantity'). Show clear success/error messages after the operation completes. Use shadcn/ui RadioGroup or Tabs components for the operation selector."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a new mutation hook useAdjustQuantity that accepts rackId (string) and quantityChange (number, positive for increase, negative for decrease). Use useMutation from React Query to call actor.adjustQuantity(rackId, quantityChange). On success, invalidate the 'inventoryList' query key to refresh the inventory display. Return mutation state including mutate function, isLoading, error, and isSuccess. Handle errors with appropriate error messages. This hook replaces or extends the existing quantity update functionality to support bidirectional adjustments."
+        }
+      ]
+    },
+    {
+      "id": "REQ-42",
+      "summary": "Implement automatic fabric selection in ScanPage based on barcode matching",
+      "acceptanceCriteria": [
+        "After a successful barcode scan, the system queries the inventory list for matching fabrics",
+        "The match is case-insensitive and checks both fabric name and rack ID fields",
+        "If a match is found, the fabric is automatically selected and its details are passed to the QuantityDeductionForm",
+        "If multiple matches are found, the first match is selected",
+        "If no match is found, display a user-friendly message indicating no fabric was found for that barcode"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ScanPage.tsx",
+          "operation": "modify",
+          "description": "Implement the automatic fabric selection logic in the ScanPage component's barcode scan handler. Use the useGetInventory hook to access the full inventory list. When onRackSelected is called from BarcodeScannerView, perform a case-insensitive search through the inventory entries to find a fabric where either entry.fabricName.toLowerCase() === scannedCode.toLowerCase() or entry.rackId.toLowerCase() === scannedCode.toLowerCase(). If a match is found, set the selectedRackId state to the matching fabric's rackId, which will automatically populate the QuantityDeductionForm with that fabric's details. If no match is found, display a user-friendly error message using a toast notification or alert component. If multiple matches exist, select the first matching entry. Ensure the search runs efficiently and handles edge cases like empty inventory or malformed barcodes."
         }
       ]
     }

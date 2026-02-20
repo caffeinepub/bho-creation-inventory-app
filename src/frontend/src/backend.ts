@@ -89,6 +89,10 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface _CaffeineStorageRefillResult {
+    success?: boolean;
+    topped_up_amount?: bigint;
+}
 export interface FabricInventoryEntry {
     fabricName: string;
     purchaseDate?: bigint;
@@ -117,9 +121,13 @@ export interface UserProfile {
     name: string;
     role: UserRole;
 }
-export interface _CaffeineStorageRefillResult {
-    success?: boolean;
-    topped_up_amount?: bigint;
+export interface UpdateFabricData {
+    fabricName: string;
+    purchaseDate?: bigint;
+    billPhoto?: ExternalBlob;
+    fabricPhoto?: ExternalBlob;
+    quantity: number;
+    rackId: string;
 }
 export enum UserRole {
     admin = "admin",
@@ -141,6 +149,7 @@ export interface backendInterface {
         fabricPhoto?: ExternalBlob;
         quantity: number;
     }): Promise<string>;
+    adjustQuantity(rackId: string, quantityChange: number): Promise<string>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     assignUserRole(userPrincipal: Principal, role: string): Promise<string>;
     createUser(userPrincipal: Principal, name: string, username: string, role: string): Promise<string>;
@@ -158,9 +167,10 @@ export interface backendInterface {
     }): Promise<string>;
     removeFabricEntry(rackId: string): Promise<string>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    updateFabricEntry(rackId: string, updatedData: UpdateFabricData): Promise<string>;
     updateFabricQuantity(rackId: string, usedQuantity: number): Promise<string>;
 }
-import type { ExternalBlob as _ExternalBlob, FabricInventoryEntry as _FabricInventoryEntry, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { ExternalBlob as _ExternalBlob, FabricInventoryEntry as _FabricInventoryEntry, UpdateFabricData as _UpdateFabricData, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -278,6 +288,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.addFabricEntry(arg0, await to_candid_record_n8(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async adjustQuantity(arg0: string, arg1: number): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.adjustQuantity(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.adjustQuantity(arg0, arg1);
             return result;
         }
     }
@@ -480,6 +504,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async updateFabricEntry(arg0: string, arg1: UpdateFabricData): Promise<string> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateFabricEntry(arg0, await to_candid_UpdateFabricData_n28(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateFabricEntry(arg0, await to_candid_UpdateFabricData_n28(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
     async updateFabricQuantity(arg0: string, arg1: number): Promise<string> {
         if (this.processError) {
             try {
@@ -606,6 +644,9 @@ function from_candid_vec_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
 async function to_candid_ExternalBlob_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: ExternalBlob): Promise<_ExternalBlob> {
     return await _uploadFile(value);
 }
+async function to_candid_UpdateFabricData_n28(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UpdateFabricData): Promise<_UpdateFabricData> {
+    return await to_candid_record_n29(_uploadFile, _downloadFile, value);
+}
 function to_candid_UserProfile_n26(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserProfile): _UserProfile {
     return to_candid_record_n27(_uploadFile, _downloadFile, value);
 }
@@ -631,6 +672,30 @@ function to_candid_record_n27(_uploadFile: (file: ExternalBlob) => Promise<Uint8
         username: value.username,
         name: value.name,
         role: to_candid_UserRole_n10(_uploadFile, _downloadFile, value.role)
+    };
+}
+async function to_candid_record_n29(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    fabricName: string;
+    purchaseDate?: bigint;
+    billPhoto?: ExternalBlob;
+    fabricPhoto?: ExternalBlob;
+    quantity: number;
+    rackId: string;
+}): Promise<{
+    fabricName: string;
+    purchaseDate: [] | [bigint];
+    billPhoto: [] | [_ExternalBlob];
+    fabricPhoto: [] | [_ExternalBlob];
+    quantity: number;
+    rackId: string;
+}> {
+    return {
+        fabricName: value.fabricName,
+        purchaseDate: value.purchaseDate ? candid_some(value.purchaseDate) : candid_none(),
+        billPhoto: value.billPhoto ? candid_some(await to_candid_ExternalBlob_n9(_uploadFile, _downloadFile, value.billPhoto)) : candid_none(),
+        fabricPhoto: value.fabricPhoto ? candid_some(await to_candid_ExternalBlob_n9(_uploadFile, _downloadFile, value.fabricPhoto)) : candid_none(),
+        quantity: value.quantity,
+        rackId: value.rackId
     };
 }
 function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {

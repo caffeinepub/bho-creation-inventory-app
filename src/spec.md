@@ -1,10 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Replace the current logo with a clothing brand appropriate image for Bho Creation.
+**Goal:** Add fabric editing capabilities and enhance barcode scanning to auto-select fabrics with quantity adjustment controls.
 
 **Planned changes:**
-- Generate a new professional clothing brand logo that represents Bho Creation as a clothing manufacturing company
-- Update the Layout component to use the new logo instead of the current 101843004_247003263392167_3873501175990976512_n.jpg
+- Add edit button to each fabric entry in the inventory list that opens a modal for updating fabric details (name, rack ID, quantity, purchase date, photos)
+- Create backend function to update fabric entries while preserving audit trail
+- Enhance barcode scanning to automatically select fabrics matching the scanned code (by name or rack ID)
+- Update quantity adjustment interface to support both increasing and decreasing fabric quantities
+- Modify backend quantity functions to handle both positive and negative adjustments
+- Implement automatic fabric selection logic in ScanPage based on barcode matches
 
-**User-visible outcome:** Users will see a professional clothing brand logo in the site header corner that better represents Bho Creation's identity as a clothing manufacturer.
+**User-visible outcome:** Users can edit any fabric details through an edit button in the inventory list. When scanning a barcode, the matching fabric automatically appears with simple controls to increase or decrease its quantity, streamlining inventory updates.

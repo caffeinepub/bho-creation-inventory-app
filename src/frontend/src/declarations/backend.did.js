@@ -46,6 +46,14 @@ export const AuditLogEntry = IDL.Record({
   'quantity' : IDL.Float64,
   'rackId' : IDL.Text,
 });
+export const UpdateFabricData = IDL.Record({
+  'fabricName' : IDL.Text,
+  'purchaseDate' : IDL.Opt(IDL.Int),
+  'billPhoto' : IDL.Opt(ExternalBlob),
+  'fabricPhoto' : IDL.Opt(ExternalBlob),
+  'quantity' : IDL.Float64,
+  'rackId' : IDL.Text,
+});
 
 export const idlService = IDL.Service({
   '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -89,6 +97,7 @@ export const idlService = IDL.Service({
       [IDL.Text],
       [],
     ),
+  'adjustQuantity' : IDL.Func([IDL.Text, IDL.Float64], [IDL.Text], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'assignUserRole' : IDL.Func([IDL.Principal, IDL.Text], [IDL.Text], []),
   'createUser' : IDL.Func(
@@ -127,6 +136,7 @@ export const idlService = IDL.Service({
     ),
   'removeFabricEntry' : IDL.Func([IDL.Text], [IDL.Text], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'updateFabricEntry' : IDL.Func([IDL.Text, UpdateFabricData], [IDL.Text], []),
   'updateFabricQuantity' : IDL.Func([IDL.Text, IDL.Float64], [IDL.Text], []),
 });
 
@@ -168,6 +178,14 @@ export const idlFactory = ({ IDL }) => {
     'fabricName' : IDL.Text,
     'userId' : IDL.Text,
     'timestamp' : IDL.Int,
+    'quantity' : IDL.Float64,
+    'rackId' : IDL.Text,
+  });
+  const UpdateFabricData = IDL.Record({
+    'fabricName' : IDL.Text,
+    'purchaseDate' : IDL.Opt(IDL.Int),
+    'billPhoto' : IDL.Opt(ExternalBlob),
+    'fabricPhoto' : IDL.Opt(ExternalBlob),
     'quantity' : IDL.Float64,
     'rackId' : IDL.Text,
   });
@@ -214,6 +232,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Text],
         [],
       ),
+    'adjustQuantity' : IDL.Func([IDL.Text, IDL.Float64], [IDL.Text], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'assignUserRole' : IDL.Func([IDL.Principal, IDL.Text], [IDL.Text], []),
     'createUser' : IDL.Func(
@@ -252,6 +271,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'removeFabricEntry' : IDL.Func([IDL.Text], [IDL.Text], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'updateFabricEntry' : IDL.Func(
+        [IDL.Text, UpdateFabricData],
+        [IDL.Text],
+        [],
+      ),
     'updateFabricQuantity' : IDL.Func([IDL.Text, IDL.Float64], [IDL.Text], []),
   });
 };
