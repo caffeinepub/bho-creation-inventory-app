@@ -38,7 +38,7 @@ export default function InventoryDetailModal({ rackId, entry, onClose }: Invento
   return (
     <>
       <Dialog open={true} onOpenChange={onClose}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900">
           <DialogHeader>
             <DialogTitle className="text-2xl">Inventory Item Details</DialogTitle>
             <DialogDescription>

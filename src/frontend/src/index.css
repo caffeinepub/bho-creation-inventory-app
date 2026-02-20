@@ -157,3 +157,20 @@ textarea:disabled {
     animation: none;
   }
 }
+
+/* Fix dialog transparency issues - ensure solid backgrounds */
+[data-radix-dialog-overlay] {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark [data-radix-dialog-overlay] {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+[data-radix-dialog-content] {
+  background-color: white !important;
+}
+
+.dark [data-radix-dialog-content] {
+  background-color: rgb(17, 24, 39) !important;
+}

@@ -62,7 +62,7 @@ export default function UserEditModal({ user, onClose }: UserEditModalProps) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white dark:bg-gray-900">
         <DialogHeader>
           <DialogTitle>Edit User</DialogTitle>
           <DialogDescription>

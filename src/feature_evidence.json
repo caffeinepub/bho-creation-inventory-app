@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-web-app-manifest-file-frontend-public-manifest-json-that-defines-the-app-name-as-bho-creation-inventory-sets-the-app-as-standalone-display-mode-configures-app-icons-for-various-sizes-192x192-512x512-and-specifies-the-start-url-and-theme-colors-matching-the-current-amber-orange-color-scheme",
-      "featureTitle": "Create a Web App Manifest file (frontend/public/manifest.json) that defines the app name as 'Bho Creation Inventory', sets the app as standalone display mode, configures app icons for various sizes (192x192, 512x512), and specifies the start URL and theme colors matching the current amber/orange color scheme",
+      "featureId": "feature-fix-the-create-user-button-in-the-adminpanel-component-frontend-src-pages-adminpanel-tsx-so-that-clicking-the-button-properly-submits-the-form-and-triggers-the-usecreateuser-mutation-to-create-new-user-accounts-in-the-backend",
+      "featureTitle": "Fix the Create User button in the AdminPanel component (frontend/src/pages/AdminPanel.tsx) so that clicking the button properly submits the form and triggers the useCreateUser mutation to create new user accounts in the backend",
       "files": [
-        "frontend/public/manifest.json"
+        "frontend/src/pages/AdminPanel.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -19,15 +19,20 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-55"
+        "REQ-65"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-register-a-service-worker-frontend-public-sw-js-that-implements-offline-caching-strategy-for-static-assets-html-css-js-images-and-enables-the-app-to-function-when-internet-connection-is-temporarily-unavailable",
-      "featureTitle": "Register a Service Worker (frontend/public/sw.js) that implements offline caching strategy for static assets (HTML, CSS, JS, images) and enables the app to function when internet connection is temporarily unavailable",
+      "featureId": "feature-fix-the-transparency-issue-affecting-all-panels-and-modals-throughout-the-application-so-that-dialog-backgrounds-are-properly-opaque-and-content-is-clearly-visible",
+      "featureTitle": "Fix the transparency issue affecting all panels and modals throughout the application so that dialog backgrounds are properly opaque and content is clearly visible",
       "files": [
-        "frontend/public/sw.js"
+        "frontend/src/components/FabricEditModal.tsx",
+        "frontend/src/components/InventoryDetailModal.tsx",
+        "frontend/src/components/ProfileSetupModal.tsx",
+        "frontend/src/components/UserEditModal.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/AdminPanel.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -41,15 +46,15 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-56"
+        "REQ-66"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-frontend-index-html-to-include-the-web-app-manifest-link-reference-and-add-meta-tags-for-mobile-app-configuration-including-viewport-settings-apple-mobile-web-app-capable-and-theme-color-meta-tags",
-      "featureTitle": "Update frontend/index.html to include the web app manifest link reference and add meta tags for mobile app configuration including viewport settings, apple-mobile-web-app-capable, and theme-color meta tags",
+      "featureId": "feature-add-comprehensive-console-logging-to-the-create-user-form-submission-flow-in-adminpanel-to-diagnose-the-button-click-failure-including-logs-for-form-submission-handler-invocation-form-field-values-mutation-trigger-backend-response-and-any-errors-encountered",
+      "featureTitle": "Add comprehensive console logging to the Create User form submission flow in AdminPanel to diagnose the button click failure, including logs for: form submission handler invocation, form field values, mutation trigger, backend response, and any errors encountered",
       "files": [
-        "frontend/index.html"
+        "frontend/src/pages/AdminPanel.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -63,56 +68,7 @@
         "blob-storage@4.0.0"
       ],
       "testIds": [
-        "REQ-57"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-an-install-prompt-component-frontend-src-components-installprompt-tsx-that-detects-when-the-app-can-be-installed-to-the-home-screen-and-displays-a-banner-or-button-prompting-users-to-add-to-home-screen-with-appropriate-messaging-for-android-and-ios-devices",
-      "featureTitle": "Add an install prompt component (frontend/src/components/InstallPrompt.tsx) that detects when the app can be installed to the home screen and displays a banner or button prompting users to 'Add to Home Screen' with appropriate messaging for Android and iOS devices",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/InstallPrompt.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "qr-code@1.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "camera@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-59"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-optimize-the-application-for-mobile-touch-interactions-by-ensuring-all-interactive-elements-have-adequate-touch-target-sizes-minimum-44x44-pixels-implementing-touch-friendly-gestures-for-barcode-scanning-and-improving-form-input-experiences-on-mobile-keyboards",
-      "featureTitle": "Optimize the application for mobile touch interactions by ensuring all interactive elements have adequate touch target sizes (minimum 44x44 pixels), implementing touch-friendly gestures for barcode scanning, and improving form input experiences on mobile keyboards",
-      "files": [
-        "frontend/src/components/BarcodeScannerView.tsx",
-        "frontend/src/components/Layout.tsx",
-        "frontend/src/components/QuantityDeductionForm.tsx",
-        "frontend/src/pages/AddFabricPage.tsx",
-        "frontend/src/pages/ScanPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "qr-code@1.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "camera@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-60"
+        "REQ-67"
       ],
       "confidence": "high"
     }

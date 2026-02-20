@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 27,
+  "projectStateVersion": 31,
   "summary": "Web-based inventory management application for Bho Creation clothing manufacturing company. Track fabric stock using barcode scanning (via device camera). Features: role-based authentication (Master Admin, Office Staff, Workers), individual user accounts with ID/password, fabric inventory management with add/remove/deduct quantities, complete audit trail tracking who added/removed fabrics, real-time data sync across all users. Admin panel for user management and permission assignment. Email-based password reset for office staff. Mobile-responsive design for phone/desktop browsers.",
   "architectural_notes": [
     "Cloud backend needed for multi-user sync (Firebase or similar)",
@@ -16,10 +16,11 @@
   ],
   "known_issues": [
     "Platform limitation: Cannot build Android native apps or generate Android Studio code",
-    "Previous build attempts failed due to Android/web platform mismatch"
+    "Previous build attempts failed due to Android/web platform mismatch",
+    "Create User button in Admin Panel is not functioning when clicked",
+    "All panels/modals displaying with incorrect transparency (visual rendering issue)"
   ],
-  "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- App icon for Progressive Web App with Bho Creation logo, optimized for mobile home screens (app-icon-192.dim_192x192.png)\n- App icon for Progressive Web App with Bho Creation logo, high resolution for splash screens (app-icon-512.dim_512x512.png)\n- Apple Touch Icon for iOS home screen with Bho Creation logo (apple-touch-icon.dim_180x180.png)",
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-implement-user-authentication-system-allowing-users-to-create-accounts-with-username-and-password-log-in-and-maintain-separate-inventory-data-per-user-account",
@@ -388,6 +389,54 @@
         "REQ-60"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-create-user-button-in-the-adminpanel-component-frontend-src-pages-adminpanel-tsx-so-that-clicking-the-button-properly-triggers-the-user-creation-mutation-and-creates-new-user-accounts-in-the-backend",
+      "title": "Debug and fix the Create User button in the AdminPanel component (frontend/src/pages/AdminPanel.tsx) so that clicking the button properly triggers the user creation mutation and creates new user accounts in the backend",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-the-usecreateuser-react-query-mutation-hook-in-frontend-src-hooks-usequeries-ts-is-properly-configured-to-call-the-backend-createuser-function-and-handle-success-error-states-correctly",
+      "title": "Verify the useCreateUser React Query mutation hook in frontend/src/hooks/useQueries.ts is properly configured to call the backend createUser function and handle success/error states correctly",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-console-logging-to-the-create-user-form-submission-flow-in-adminpanel-to-help-diagnose-where-the-button-click-is-failing-button-click-handler-form-validation-mutation-invocation-backend-call",
+      "title": "Add console logging to the Create User form submission flow in AdminPanel to help diagnose where the button click is failing (button click handler, form validation, mutation invocation, backend call)",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-create-user-button-in-the-adminpanel-component-frontend-src-pages-adminpanel-tsx-so-that-clicking-the-button-properly-submits-the-form-and-triggers-the-usecreateuser-mutation-to-create-new-user-accounts-in-the-backend",
+      "title": "Fix the Create User button in the AdminPanel component (frontend/src/pages/AdminPanel.tsx) so that clicking the button properly submits the form and triggers the useCreateUser mutation to create new user accounts in the backend",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-transparency-issue-affecting-all-panels-and-modals-throughout-the-application-so-that-dialog-backgrounds-are-properly-opaque-and-content-is-clearly-visible",
+      "title": "Fix the transparency issue affecting all panels and modals throughout the application so that dialog backgrounds are properly opaque and content is clearly visible",
+      "reqIds": [
+        "REQ-66"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-console-logging-to-the-create-user-form-submission-flow-in-adminpanel-to-diagnose-the-button-click-failure-including-logs-for-form-submission-handler-invocation-form-field-values-mutation-trigger-backend-response-and-any-errors-encountered",
+      "title": "Add comprehensive console logging to the Create User form submission flow in AdminPanel to diagnose the button click failure, including logs for: form submission handler invocation, form field values, mutation trigger, backend response, and any errors encountered",
+      "reqIds": [
+        "REQ-67"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -627,6 +676,20 @@
       "reqIds": [
         "REQ-58"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-55",
+      "summary": "Verify the backend createUser function in backend/main.mo accepts the correct parameters (principal, username, name, password, role) and successfully creates new user accounts with proper error handling for duplicate users or invalid inputs",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-56",
+      "summary": "Fix transparency issue affecting all panels/modals in the application",
+      "reqIds": [],
       "status": "pending"
     }
   ],

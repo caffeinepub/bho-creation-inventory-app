@@ -249,7 +249,6 @@ export default function InventoryList() {
         <FabricEditModal
           rackId={editEntry.rackId}
           entry={editEntry.entry}
-          open={true}
           onClose={() => setEditEntry(null)}
         />
       )}

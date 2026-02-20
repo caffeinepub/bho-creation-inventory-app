@@ -1,88 +1,57 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-20T06:26:37.658Z",
+  "generatedAt": "2026-02-20T08:05:31.736Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 5,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-55",
-        "summary": "Create a Web App Manifest file (frontend/public/manifest.json) that defines the app name as 'Bho Creation Inventory', sets the app as standalone display mode, configures app icons for various sizes (192x192, 512x512), and specifies the start URL and theme colors matching the current amber/orange color scheme",
+        "id": "REQ-65",
+        "summary": "Fix the Create User button in the AdminPanel component (frontend/src/pages/AdminPanel.tsx) so that clicking the button properly submits the form and triggers the useCreateUser mutation to create new user accounts in the backend",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/manifest.json"
+          "frontend/src/pages/AdminPanel.tsx"
         ],
         "matchedFiles": [
-          "frontend/public/manifest.json"
+          "frontend/src/pages/AdminPanel.tsx"
         ]
       },
       {
-        "id": "REQ-56",
-        "summary": "Register a Service Worker (frontend/public/sw.js) that implements offline caching strategy for static assets (HTML, CSS, JS, images) and enables the app to function when internet connection is temporarily unavailable",
+        "id": "REQ-66",
+        "summary": "Fix the transparency issue affecting all panels and modals throughout the application so that dialog backgrounds are properly opaque and content is clearly visible",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/public/sw.js"
+          "frontend/src/pages/AdminPanel.tsx",
+          "frontend/src/components/FabricEditModal.tsx",
+          "frontend/src/components/InventoryDetailModal.tsx",
+          "frontend/src/components/UserEditModal.tsx",
+          "frontend/src/components/ProfileSetupModal.tsx",
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/public/sw.js"
+          "frontend/src/pages/AdminPanel.tsx",
+          "frontend/src/components/FabricEditModal.tsx",
+          "frontend/src/components/InventoryDetailModal.tsx",
+          "frontend/src/components/UserEditModal.tsx",
+          "frontend/src/components/ProfileSetupModal.tsx",
+          "frontend/src/index.css"
         ]
       },
       {
-        "id": "REQ-57",
-        "summary": "Update frontend/index.html to include the web app manifest link reference and add meta tags for mobile app configuration including viewport settings, apple-mobile-web-app-capable, and theme-color meta tags",
+        "id": "REQ-67",
+        "summary": "Add comprehensive console logging to the Create User form submission flow in AdminPanel to diagnose the button click failure, including logs for: form submission handler invocation, form field values, mutation trigger, backend response, and any errors encountered",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/index.html"
+          "frontend/src/pages/AdminPanel.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/index.html"
-        ]
-      },
-      {
-        "id": "REQ-58",
-        "summary": "Update frontend/src/main.tsx to register the service worker on application load, handling service worker lifecycle events (install, activate, update) and providing user notifications when new app versions are available",
-        "status": "missing",
-        "plannedFiles": [
-          "frontend/src/main.tsx"
-        ],
-        "matchedFiles": []
-      },
-      {
-        "id": "REQ-59",
-        "summary": "Add an install prompt component (frontend/src/components/InstallPrompt.tsx) that detects when the app can be installed to the home screen and displays a banner or button prompting users to 'Add to Home Screen' with appropriate messaging for Android and iOS devices",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/InstallPrompt.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/InstallPrompt.tsx",
-          "frontend/src/App.tsx"
-        ]
-      },
-      {
-        "id": "REQ-60",
-        "summary": "Optimize the application for mobile touch interactions by ensuring all interactive elements have adequate touch target sizes (minimum 44x44 pixels), implementing touch-friendly gestures for barcode scanning, and improving form input experiences on mobile keyboards",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/index.css",
-          "frontend/src/components/BarcodeScannerView.tsx",
-          "frontend/src/pages/AddFabricPage.tsx",
-          "frontend/src/pages/ScanPage.tsx",
-          "frontend/src/components/QuantityDeductionForm.tsx",
-          "frontend/src/components/Layout.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/BarcodeScannerView.tsx",
-          "frontend/src/pages/AddFabricPage.tsx",
-          "frontend/src/pages/ScanPage.tsx",
-          "frontend/src/components/QuantityDeductionForm.tsx",
-          "frontend/src/components/Layout.tsx"
+          "frontend/src/pages/AdminPanel.tsx"
         ]
       }
     ]
@@ -92,20 +61,13 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/index.html",
-    "frontend/public/assets/generated/app-icon-192.dim_192x192.png",
-    "frontend/public/assets/generated/app-icon-512.dim_512x512.png",
-    "frontend/public/assets/generated/apple-touch-icon.dim_180x180.png",
-    "frontend/public/manifest.json",
-    "frontend/public/sw.js",
-    "frontend/src/App.tsx",
-    "frontend/src/components/BarcodeScannerView.tsx",
-    "frontend/src/components/InstallPrompt.tsx",
-    "frontend/src/components/Layout.tsx",
-    "frontend/src/components/QuantityDeductionForm.tsx",
+    "frontend/src/components/FabricEditModal.tsx",
+    "frontend/src/components/InventoryDetailModal.tsx",
+    "frontend/src/components/InventoryList.tsx",
+    "frontend/src/components/ProfileSetupModal.tsx",
+    "frontend/src/components/UserEditModal.tsx",
     "frontend/src/index.css",
-    "frontend/src/pages/AddFabricPage.tsx",
-    "frontend/src/pages/ScanPage.tsx",
+    "frontend/src/pages/AdminPanel.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

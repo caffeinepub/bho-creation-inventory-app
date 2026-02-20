@@ -7,13 +7,10 @@ import Principal "mo:core/Principal";
 import Text "mo:core/Text";
 import List "mo:core/List";
 
-
 import AccessControl "authorization/access-control";
 import Storage "blob-storage/Storage";
 import MixinAuthorization "authorization/MixinAuthorization";
 import MixinStorage "blob-storage/Mixin";
-
-// Specify the migration function in the with-clause
 
 actor {
   include MixinStorage();
@@ -35,20 +32,20 @@ actor {
   };
 
   public type FabricEntry = {
-    itemType : Text; // New field to distinguish item type (fabric, thread, etc.)
+    itemType : Text;
     fabricName : Text;
     quantity : Float;
-    unit : Text; // New field for measurement units (meters, pieces, etc.)
+    unit : Text;
     fabricPhoto : ?Storage.ExternalBlob;
     purchaseDate : ?Int;
     billPhoto : ?Storage.ExternalBlob;
   };
 
   type UpdateFabricData = {
-    itemType : Text; // Added itemType to update data
+    itemType : Text;
     fabricName : Text;
     quantity : Float;
-    unit : Text; // Added unit to update data
+    unit : Text;
     fabricPhoto : ?Storage.ExternalBlob;
     purchaseDate : ?Int;
     billPhoto : ?Storage.ExternalBlob;
@@ -82,7 +79,9 @@ actor {
     password : Text;
   }) : async Text {
     if (userAccounts.size() > 0) {
-      Runtime.trap("Unauthorized: Master Admin already exists. This function can only be used for initial setup.");
+      Runtime.trap(
+        "Unauthorized: Master Admin already exists. This function can only be used for initial setup.",
+      );
     };
 
     if (caller.isAnonymous()) {
@@ -156,17 +155,22 @@ actor {
     };
   };
 
-  public shared ({ caller }) func addFabricEntry(rackId : Text, entryData : {
-    itemType : Text;
-    fabricName : Text;
-    quantity : Float;
-    unit : Text;
-    fabricPhoto : ?Storage.ExternalBlob;
-    purchaseDate : ?Int;
-    billPhoto : ?Storage.ExternalBlob;
-  }) : async Text {
+  public shared ({ caller }) func addFabricEntry(
+    rackId : Text,
+    entryData : {
+      itemType : Text;
+      fabricName : Text;
+      quantity : Float;
+      unit : Text;
+      fabricPhoto : ?Storage.ExternalBlob;
+      purchaseDate : ?Int;
+      billPhoto : ?Storage.ExternalBlob;
+    },
+  ) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only Master Admin and Office Staff can add entries");
+      Runtime.trap(
+        "Unauthorized: Only Master Admin and Office Staff can add entries",
+      );
     };
     let entry : FabricEntry = {
       itemType = entryData.itemType;
@@ -178,17 +182,30 @@ actor {
       billPhoto = entryData.billPhoto;
     };
     inventory.add(rackId, entry);
-    addAuditLogEntry(caller, "Added Item", entryData.fabricName, rackId, entryData.quantity);
+    addAuditLogEntry(
+      caller,
+      "Added Item",
+      entryData.fabricName,
+      rackId,
+      entryData.quantity,
+    );
     "Item successfully added!";
   };
 
-  public shared ({ caller }) func updateFabricEntry(rackId : Text, updatedData : UpdateFabricData) : async Text {
+  public shared ({ caller }) func updateFabricEntry(
+    rackId : Text,
+    updatedData : UpdateFabricData,
+  ) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only Master Admin and Office Staff can update entries");
+      Runtime.trap(
+        "Unauthorized: Only Master Admin and Office Staff can update entries",
+      );
     };
 
     switch (inventory.get(rackId)) {
-      case (null) { "Entry with ID '" # rackId # "' does not exist." };
+      case (null) {
+        "Entry with ID '" # rackId # "' does not exist.";
+      };
       case (?_) {
         let updatedEntry : FabricEntry = {
           itemType = updatedData.itemType;
@@ -205,9 +222,14 @@ actor {
     };
   };
 
-  public shared ({ caller }) func adjustQuantity(rackId : Text, quantityChange : Float) : async Text {
+  public shared ({ caller }) func adjustQuantity(
+    rackId : Text,
+    quantityChange : Float,
+  ) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only Master Admin and Office Staff can adjust quantities");
+      Runtime.trap(
+        "Unauthorized: Only Master Admin and Office Staff can adjust quantities",
+      );
     };
     switch (inventory.get(rackId)) {
       case (null) { "Entry not found" };
@@ -237,9 +259,14 @@ actor {
     };
   };
 
-  public shared ({ caller }) func updateFabricQuantity(rackId : Text, usedQuantity : Float) : async Text {
+  public shared ({ caller }) func updateFabricQuantity(
+    rackId : Text,
+    usedQuantity : Float,
+  ) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only Master Admin and Office Staff can update quantities");
+      Runtime.trap(
+        "Unauthorized: Only Master Admin and Office Staff can update quantities",
+      );
     };
     switch (inventory.get(rackId)) {
       case (null) { "Not found" };
@@ -247,9 +274,17 @@ actor {
         if (usedQuantity > item.quantity) {
           "Used amount cannot be more than available!";
         } else {
-          let updatedItem = { item with quantity = item.quantity - usedQuantity };
+          let updatedItem = {
+            item with quantity = item.quantity - usedQuantity
+          };
           inventory.add(rackId, updatedItem);
-          addAuditLogEntry(caller, "Updated Quantity", item.fabricName, rackId, usedQuantity);
+          addAuditLogEntry(
+            caller,
+            "Updated Quantity",
+            item.fabricName,
+            rackId,
+            usedQuantity,
+          );
           "Item successfully updated!";
         };
       };
@@ -258,13 +293,21 @@ actor {
 
   public shared ({ caller }) func removeFabricEntry(rackId : Text) : async Text {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only Master Admin and Office Staff can remove entries");
+      Runtime.trap(
+        "Unauthorized: Only Master Admin and Office Staff can remove entries",
+      );
     };
     switch (inventory.get(rackId)) {
       case (null) { "Not found" };
       case (?item) {
         inventory.remove(rackId);
-        addAuditLogEntry(caller, "Removed Item", item.fabricName, rackId, item.quantity);
+        addAuditLogEntry(
+          caller,
+          "Removed Item",
+          item.fabricName,
+          rackId,
+          item.quantity,
+        );
         "Item successfully removed!";
       };
     };
@@ -274,41 +317,77 @@ actor {
     password.size() >= 8;
   };
 
-  public shared ({ caller }) func createUser(userPrincipal : Principal, name : Text, username : Text, password : Text, role : Text) : async Text {
+  public shared ({ caller }) func createUser(
+    principal : Principal,
+    username : Text,
+    name : Text,
+    password : Text,
+    role : Text,
+  ) : async Text {
+    // Authorization check: Only admins can create users
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Only Master Admin can create users");
     };
 
-    switch (mapToInternalRole(role)) {
-      case (null) { Runtime.trap("Invalid role format") };
-      case (?_) {};
+    // Validate the principal is not anonymous
+    if (principal.isAnonymous()) {
+      Runtime.trap("Invalid principal: Cannot create user with anonymous principal");
     };
 
+    // Validate role format before proceeding
+    let internalRole = switch (mapToInternalRole(role)) {
+      case (null) { Runtime.trap("Invalid role format. Valid roles are: admin, office, worker") };
+      case (?r) { r };
+    };
+
+    // Validate password strength
     if (not isValidPassword(password)) {
       Runtime.trap("Your password should contain at least 8 characters; please try again with a valid password.",);
     };
 
-    if (userAccounts.containsKey(userPrincipal)) {
-      Runtime.trap("User already exists");
+    // Check for duplicate username
+    for ((existingPrincipal, existingAccount) in userAccounts.entries()) {
+      if (existingAccount.profile.username == username) {
+        Runtime.trap("Username already exists. Please choose a different username.");
+      };
     };
 
-    let internalRole = switch (mapToInternalRole(role)) {
-      case (null) { Runtime.trap("Invalid role format") };
-      case (?r) { r };
+    // Check for duplicate principal
+    if (userAccounts.containsKey(principal)) {
+      Runtime.trap("This principal already exists. Please check if this user has already been created or contact support for assistance.");
     };
 
-    let userProfile : UserProfile = { name; username; role = internalRole };
+    // Validate input parameters are not empty
+    if (username.size() == 0) {
+      Runtime.trap("Username cannot be empty");
+    };
+    if (name.size() == 0) {
+      Runtime.trap("Name cannot be empty");
+    };
+
+    // Create user profile and account
+    let userProfile : UserProfile = {
+      name;
+      username;
+      role = internalRole;
+    };
     let userAccount : UserAccount = { profile = userProfile; password };
 
-    userAccounts.add(userPrincipal, userAccount);
+    // Add user to accounts
+    userAccounts.add(principal, userAccount);
 
-    AccessControl.assignRole(accessControlState, caller, userPrincipal, internalRole);
+    // Assign role in access control system
+    AccessControl.assignRole(accessControlState, caller, principal, internalRole);
 
+    // Log the action
     addAuditLogEntry(caller, "Created User: " # username, "", "", 0);
     "User successfully created!";
   };
 
-  public shared ({ caller }) func assignUserRole(userPrincipal : Principal, role : Text) : async Text {
+  public shared ({ caller }) func assignUserRole(
+    userPrincipal : Principal,
+    role : Text,
+  ) : async Text {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Only Master Admin can assign roles");
     };
@@ -334,7 +413,13 @@ actor {
     "Role successfully assigned!";
   };
 
-  func addAuditLogEntry(callerPrincipal : Principal, action : Text, fabricName : Text, rackId : Text, quantity : Float) {
+  func addAuditLogEntry(
+    callerPrincipal : Principal,
+    action : Text,
+    fabricName : Text,
+    rackId : Text,
+    quantity : Float,
+  ) {
     let userId = callerPrincipal.toText();
     let entry = {
       userId;
@@ -373,7 +458,10 @@ actor {
     #error : Text;
   };
 
-  public shared query ({ caller }) func loginWithCredentials(username : Text, password : Text) : async LoginResult {
+  public shared query ({ caller }) func loginWithCredentials(
+    username : Text,
+    password : Text,
+  ) : async LoginResult {
     // Allow anonymous callers since this is the authentication entry point
     // Note: This creates a parallel authentication system outside of IC's Principal-based auth
     // In production, consider using Internet Identity or similar instead

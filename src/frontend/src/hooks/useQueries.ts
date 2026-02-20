@@ -164,10 +164,32 @@ export function useCreateUser() {
       role: string;
     }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.createUser(userPrincipal, name, username, password, role);
+      
+      console.log('[useCreateUser] Mutation started at', new Date().toISOString());
+      console.log('[useCreateUser] Parameters:', {
+        userPrincipal: userPrincipal.toString(),
+        username,
+        name,
+        password: '***' + password.slice(-2),
+        role,
+      });
+      
+      try {
+        // Fixed parameter order: principal, username, name, password, role
+        const result = await actor.createUser(userPrincipal, username, name, password, role);
+        console.log('[useCreateUser] Success:', result);
+        return result;
+      } catch (error: any) {
+        console.error('[useCreateUser] Error:', error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('[useCreateUser] onSuccess callback triggered, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['allUsers'] });
+    },
+    onError: (error: any) => {
+      console.error('[useCreateUser] onError callback triggered:', error.message || error);
     },
   });
 }

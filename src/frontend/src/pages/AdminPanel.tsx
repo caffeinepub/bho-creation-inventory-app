@@ -67,12 +67,23 @@ export default function AdminPanel() {
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log('[AdminPanel] Create User form submitted at', new Date().toISOString());
+    console.log('[AdminPanel] Form data:', {
+      name: newUserName,
+      username: newUserUsername,
+      principal: newUserPrincipal,
+      role: newUserRole,
+      passwordLength: newUserPassword.length,
+    });
+
     if (!newUserName.trim() || !newUserUsername.trim() || !newUserPrincipal.trim() || !newUserPassword.trim()) {
+      console.log('[AdminPanel] Validation failed: Empty fields');
       toast.error('Please fill in all fields');
       return;
     }
 
     if (newUserPassword.length < 8) {
+      console.log('[AdminPanel] Validation failed: Password too short');
       toast.error('Password must be at least 8 characters');
       return;
     }
@@ -81,7 +92,9 @@ export default function AdminPanel() {
     let principal: Principal;
     try {
       principal = Principal.fromText(newUserPrincipal.trim());
+      console.log('[AdminPanel] Principal validated successfully:', principal.toString());
     } catch (error) {
+      console.error('[AdminPanel] Principal validation failed:', error);
       toast.error('Invalid principal ID format');
       return;
     }
@@ -89,18 +102,22 @@ export default function AdminPanel() {
     // Check if username is unique
     const existingUsernames = users?.map(([_, profile]) => profile.username) || [];
     if (existingUsernames.includes(newUserUsername.trim())) {
+      console.log('[AdminPanel] Validation failed: Username already exists');
       toast.error('Username already exists');
       return;
     }
 
+    console.log('[AdminPanel] All validations passed, calling mutation...');
+
     try {
-      await createUserMutation.mutateAsync({
+      const result = await createUserMutation.mutateAsync({
         userPrincipal: principal,
         name: newUserName.trim(),
         username: newUserUsername.trim(),
         password: newUserPassword.trim(),
         role: newUserRole,
       });
+      console.log('[AdminPanel] Mutation completed successfully:', result);
       toast.success('User created successfully');
       setNewUserName('');
       setNewUserUsername('');
@@ -109,6 +126,7 @@ export default function AdminPanel() {
       setNewUserRole('worker');
       setShowCreateForm(false);
     } catch (error: any) {
+      console.error('[AdminPanel] Mutation failed:', error);
       toast.error(error.message || 'Failed to create user');
     }
   };

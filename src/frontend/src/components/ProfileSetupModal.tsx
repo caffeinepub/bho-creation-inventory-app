@@ -49,7 +49,7 @@ export default function ProfileSetupModal() {
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="sm:max-w-md" onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="sm:max-w-md bg-white dark:bg-gray-900" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Welcome! Set up your profile</DialogTitle>
           <DialogDescription>

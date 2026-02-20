@@ -70,7 +70,7 @@ export interface backendInterface {
     adjustQuantity(rackId: string, quantityChange: number): Promise<string>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     assignUserRole(userPrincipal: Principal, role: string): Promise<string>;
-    createUser(userPrincipal: Principal, name: string, username: string, password: string, role: string): Promise<string>;
+    createUser(principal: Principal, username: string, name: string, password: string, role: string): Promise<string>;
     getAllInventoryFabricEntries(): Promise<Array<[string, FabricEntry]>>;
     getAllUsers(): Promise<Array<[Principal, UserProfile]>>;
     getAuditLog(): Promise<Array<AuditLogEntry>>;

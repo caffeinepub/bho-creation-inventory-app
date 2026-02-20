@@ -1,16 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Convert the Bho Creation Inventory web application into a Progressive Web App (PWA) that can be installed on mobile devices and function offline.
+**Goal:** Fix the Create User button functionality in the Admin Panel and resolve transparency issues affecting all panels and modals throughout the application.
 
 **Planned changes:**
-- Create a Web App Manifest file defining app name, icons, display mode, and theme colors
-- Register a Service Worker to enable offline caching of static assets
-- Update index.html with manifest link and mobile app meta tags
-- Register service worker in main.tsx with update notifications
-- Add InstallPrompt component to guide users through home screen installation
-- Optimize all interactive elements for mobile touch (minimum 44x44px targets)
-- Configure mobile-friendly keyboard types for form inputs
-- Improve barcode scanner interface for touch controls
+- Fix the Create User button in AdminPanel so it properly submits the form and triggers the useCreateUser mutation to create new user accounts
+- Add comprehensive console logging to the Create User form submission flow to diagnose button click failures
+- Fix transparency issues on all modal dialogs and panels to ensure solid, opaque backgrounds with clearly visible content
+- Ensure dialog overlays have appropriate backdrop styling with proper opacity
 
-**User-visible outcome:** Users can install the inventory app on their mobile device home screens, access it like a native app, and continue working even when internet connection is temporarily unavailable. The app will display install prompts and notify users when updates are available.
+**User-visible outcome:** Admin users can successfully create new user accounts using the Create User button, and all panels and modals display with proper solid backgrounds making content clearly readable.
